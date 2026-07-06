@@ -51,6 +51,7 @@ const workStatus = document.getElementById("workStatus");
 const todayStatus = document.getElementById("todayStatus");
 const attendanceBadge = document.getElementById("attendanceBadge");
 const currentDate = document.getElementById("currentDate");
+const currentTime = document.getElementById("currentTime");
 const absenCount = document.getElementById("absenCount");
 const attendancePercent = document.getElementById("attendancePercent");
 const attendanceProgressText = document.getElementById(
@@ -194,68 +195,70 @@ setInterval(() => {
   }
 }, 60000);
 
+function updateClock() {
+  if (currentTime) {
+    currentTime.textContent = formatTime(new Date());
+  }
+}
+
+updateClock();
+setInterval(updateClock, 1000);
+
 currentDate.textContent = formatDate(new Date());
 updateAttendanceSummary();
 updateWorkDuration();
 updateAttendanceStatus();
 requestLocation();
 
-const weeklyAttendanceCtx = document
-  .getElementById("weeklyAttendanceChart")
-  .getContext("2d");
-
 // Weekly Attendance Chart =======================================
 
-new Chart(weeklyAttendanceCtx, {
-  type: "bar",
-  data: {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    datasets: [
-      {
-        label: "Present",
-        data: [1, 1, 1, 0, 1, 0, 0],
-        backgroundColor: "#10b981",
-        borderRadius: 10,
-        barThickness: 19,
-      },
-      {
-        label: "Absent",
-        data: [0, 0, 0, 1, 0, 1, 1],
-        backgroundColor: "#ef4444",
-        borderRadius: 10,
-        barThickness: 19,
-      },
-    ],
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "top",
-        labels: {
-          usePointStyle: true,
-          pointStyle: "circle",
-          padding: 20,
+document.addEventListener("DOMContentLoaded", () => {
+  const canvas = document.getElementById("attendanceChart");
+  if (!canvas) return;
+
+  const days = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"];
+  const present = [1, 1, 1, 0, 1, 1, 0];
+  const isDark = matchMedia("(prefers-color-scheme: dark)").matches;
+  const gridColor = isDark ? "#2c2c2a" : "#e1e0d9";
+  const tickColor = "#898781";
+
+  new Chart(canvas, {
+    type: "bar",
+    data: {
+      labels: days,
+      datasets: [
+        {
+          data: present.map((v) => 1),
+          backgroundColor: present.map((v) =>
+            v === 1 ? "#0ca30c" : "#d03b3b",
+          ),
+          borderRadius: 6,
+          maxBarThickness: 28,
         },
-      },
+      ],
     },
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 1,
-        ticks: {
-          stepSize: 1,
-        },
-        grid: {
-          color: "#e2e8f0",
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => (present[ctx.dataIndex] === 1 ? "Hadir" : "Absen"),
+          },
         },
       },
-      x: {
-        grid: {
+      scales: {
+        y: {
           display: false,
+          beginAtZero: true,
+          max: 1.15,
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: tickColor, font: { size: 12 } },
         },
       },
     },
-  },
+  });
 });

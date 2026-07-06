@@ -53,22 +53,13 @@
           <div class="flex items-center justify-between px-6 py-5">
             <div class="flex items-center gap-3">
               <div
-                class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg"
+                class="flex h-15 w-20 items-center justify-center text-white shadow-lg"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
+                <img
+                  src="assets/LEXA-logo.png"
+                  alt="LEXA Logo"
+                  class="h-15 w-15 rounded-full object-cover shadow-lg"
+                />
               </div>
               <div>
                 <p class="text-xs uppercase tracking-[0.35em] text-slate-300">
@@ -387,6 +378,11 @@
               </div>
 
               <div class="flex items-center gap-3">
+                <div
+                  class="hidden rounded-2xl bg-slate-100 px-4 py-2 text-sm text-slate-600 md:block"
+                >
+                  <span id="currentTime">--:--</span>
+                </div>
                 <div
                   class="hidden rounded-2xl bg-slate-100 px-4 py-2 text-sm text-slate-600 md:block"
                 >
@@ -724,7 +720,7 @@
                     <div>
                       <p class="text-sm text-slate-500">Weekly Attendance</p>
                       <h3 class="mt-1 text-xl font-semibold text-slate-800">
-                        Attendance vs Absence
+                        Attendance & Absence
                       </h3>
                     </div>
                     <span
@@ -734,8 +730,28 @@
                     </span>
                   </div>
 
-                  <div class="mt-6 h-[320px]">
-                    <canvas id="weeklyAttendanceChart"></canvas>
+                  <div
+                    class="mt-5 flex items-center gap-4 text-sm text-slate-600"
+                  >
+                    <span class="flex items-center gap-1.5">
+                      <span class="h-2.5 w-2.5 rounded-sm bg-emerald-500"></span
+                      >Hadir
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                      <span class="h-2.5 w-2.5 rounded-sm bg-red-500"></span
+                      >Absen
+                    </span>
+                  </div>
+
+                  <div class="mt-4 h-[260px]">
+                    <canvas
+                      id="attendanceChart"
+                      role="img"
+                      aria-label="Grafik batang kehadiran Senin sampai Minggu. Hadir pada Senin, Selasa, Rabu, Jumat, dan Sabtu. Absen pada Kamis dan Minggu."
+                    >
+                      Kehadiran mingguan: Senin hadir, Selasa hadir, Rabu hadir,
+                      Kamis absen, Jumat hadir, Sabtu hadir, Minggu absen.
+                    </canvas>
                   </div>
                 </div>
 
