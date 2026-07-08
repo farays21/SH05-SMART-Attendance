@@ -144,12 +144,40 @@ function updateAttendanceStatus() {
   }
 }
 
+// =========================
+// Location logic
+// =========================
+const locationMap = document.getElementById("locationMap");
+
 function setLocation(position) {
   const { latitude, longitude } = position.coords;
   locationText.textContent = "Attendance location detected";
   coordinates.textContent = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
-}
+  document.getElementById("coordinates").innerHTML = `
+    Latitude: ${latitude.toFixed(6)}<br>
+    Longitude: ${longitude.toFixed(6)}
+  `;
 
+  document.getElementById("locationMap").src =
+    `https://maps.google.com/maps?q=${latitude},${longitude}&z=17&output=embed`;
+
+  getAddress(latitude, longitude);
+}
+async function getAddress(latitude, longitude) {
+  try {
+    const response = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`,
+    );
+
+    const data = await response.json();
+
+    document.getElementById("locationAddress").textContent =
+      data.display_name || "Address not found";
+  } catch (error) {
+    document.getElementById("locationAddress").textContent =
+      "Failed to retrieve address";
+  }
+}
 function showLocationError() {
   locationText.textContent = "Location unavailable";
   coordinates.textContent =
