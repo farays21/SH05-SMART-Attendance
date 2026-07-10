@@ -6,6 +6,7 @@
     <title>Smart Attendance Dashboard</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
     <script>
       tailwind.config = {
         theme: {
@@ -520,145 +521,495 @@
             </div>
 
             <!-- Main grid -->
-            <div class="grid gap-6 lg:grid-cols-2">
-              <!-- ================= LEFT : MAP ================= -->
-              <div class="rounded-3xl bg-white p-6 shadow-sm">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-sm text-slate-500">Current Location</p>
-                    <h3 class="mt-1 text-xl font-semibold text-slate-800">
-                      Attendance Location
-                    </h3>
-                  </div>
-
-                  <button
-                    id="refreshLocation"
-                    class="rounded-xl border border-slate-200 px-4 py-2 text-sm hover:bg-slate-100"
-                  >
-                    Refresh
-                  </button>
-                </div>
-
-                <!-- Map -->
+            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <!-- Total Present -->
+              <div
+                class="flex items-center gap-4 rounded-3xl bg-white p-5 shadow-sm"
+              >
                 <div
-                  class="mt-5 overflow-hidden rounded-2xl border border-slate-200"
+                  class="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600"
                 >
-                  <iframe
-                    id="attendanceMap"
-                    src="
-                    class="h-[420px] w-full"
-                    loading="lazy"
-                  ></iframe>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-7 w-7"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 12l2 2 4-4m6 2A9 9 0 1112 3a9 9 0 019 9z"
+                    />
+                  </svg>
                 </div>
 
-                <!-- Information -->
-                <!-- Information -->
-                <div class="mt-5 rounded-2xl bg-slate-50 p-4">
-                  <h4 class="font-semibold text-slate-700">Current Position</h4>
-
-                  <p id="locationText" class="mt-2 text-slate-700">
-                    Searching location...
-                  </p>
-
-                  <!-- Tambahkan ini -->
-                  <p
-                    id="locationAddress"
-                    class="mt-2 text-sm leading-6 text-slate-600"
+                <div>
+                  <p class="text-sm text-slate-500">Total Present</p>
+                  <h2
+                    id="totalPresent"
+                    class="text-3xl font-bold text-emerald-600"
                   >
-                    Detecting address...
-                  </p>
-
-                  <p id="coordinates" class="mt-2 text-sm text-slate-500">
-                    Latitude, Longitude
-                  </p>
-
-                  <p class="mt-4 text-sm text-slate-500">
-                    Make sure your location is within the company's attendance
-                    area before performing check-in or check-out.
+                    20
+                  </h2>
+                  <p class="text-sm text-slate-500">
+                    Employees present this month
                   </p>
                 </div>
               </div>
 
-              <!-- ================= RIGHT : CAMERA ================= -->
-              <div class="rounded-3xl bg-white p-6 shadow-sm">
-                <div>
-                  <p class="text-sm text-slate-500">Camera Verification</p>
-                  <h3 class="mt-1 text-xl font-semibold text-slate-800">
-                    Selfie Verification
-                  </h3>
-                </div>
-
-                <!-- Camera -->
+              <!-- Total Late -->
+              <div
+                class="flex items-center gap-4 rounded-3xl bg-white p-5 shadow-sm"
+              >
                 <div
-                  class="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100"
+                  class="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-500"
                 >
-                  <video
-                    id="cameraPreview"
-                    autoplay
-                    playsinline
-                    class="h-[420px] w-full object-cover"
-                  ></video>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-7 w-7"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l2 2m8-2A10 10 0 1112 2a10 10 0 0110 10z"
+                    />
+                  </svg>
                 </div>
 
-                <p class="mt-4 text-sm text-slate-500">
-                  Position your face clearly inside the camera frame before
-                  submitting attendance.
-                </p>
+                <div>
+                  <p class="text-sm text-slate-500">Total Late</p>
+                  <h2 id="totalLate" class="text-3xl font-bold text-amber-500">
+                    3
+                  </h2>
+                  <p class="text-sm text-slate-500">Late arrivals this month</p>
+                </div>
+              </div>
 
-                <!-- Buttons -->
-                <div class="mt-6 grid grid-cols-2 gap-4">
-                  <button
-                    id="checkInBtn"
-                    class="rounded-2xl bg-emerald-600 py-4 font-semibold text-white transition hover:bg-emerald-700"
+              <!-- Total Absent -->
+              <div
+                class="flex items-center gap-4 rounded-3xl bg-white p-5 shadow-sm"
+              >
+                <div
+                  class="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100 text-red-500"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-7 w-7"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    Check In
-                  </button>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </div>
 
-                  <button
-                    id="checkOutBtn"
-                    class="rounded-2xl bg-rose-600 py-4 font-semibold text-white transition hover:bg-rose-700"
+                <div>
+                  <p class="text-sm text-slate-500">Total Absent</p>
+                  <h2 id="totalAbsent" class="text-3xl font-bold text-red-500">
+                    2
+                  </h2>
+                  <p class="text-sm text-slate-500">
+                    Absence records this month
+                  </p>
+                </div>
+              </div>
+
+              <!-- Attendance Rate -->
+              <div
+                class="flex items-center gap-4 rounded-3xl bg-gradient-to-br from-indigo-600 to-blue-500 p-5 text-white shadow-sm"
+              >
+                <div
+                  class="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-7 w-7"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    Check Out
-                  </button>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 17v-6m3 6V7m3 10v-3m3 7H6a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2v14a2 2 0 01-2 2z"
+                    />
+                  </svg>
+                </div>
+
+                <div>
+                  <p class="text-sm text-indigo-100">Attendance Rate</p>
+                  <h2 id="attendanceRate" class="text-3xl font-bold">90.9%</h2>
+                  <p class="text-sm text-indigo-100">
+                    Overall attendance performance
+                  </p>
                 </div>
               </div>
             </div>
 
-            <!-- bottom content -->
-            <div
-              class="rounded-3xl bg-gradient-to-br from-indigo-600 to-blue-500 p-6 text-white shadow-sm"
-            >
-              <div class="text-center">
-                <!-- Status -->
-                <p class="text-indigo-100 text-sm uppercase tracking-widest">
-                  Attendance Status
-                </p>
-
-                <h2 id="attendanceStatus" class="mt-2 text-3xl font-bold">
-                  Not Checked In
-                </h2>
-
-                <!-- Divider -->
-                <div class="my-6 border-t border-white/20"></div>
-
-                <!-- Time -->
-                <div class="grid grid-cols-2 gap-6">
+            <div class="grid gap-6 lg:grid-cols-2">
+              <!-- ================= LEFT : ATTENDANCE CALENDAR ================= -->
+              <div class="rounded-3xl bg-white p-6 shadow-sm">
+                <!-- Header -->
+                <div class="flex items-center justify-between">
                   <div>
-                    <p class="text-sm text-indigo-200">Check In</p>
+                    <p class="text-sm text-slate-500">Attendance Calendar</p>
 
-                    <h3 id="checkInTime" class="mt-2 text-2xl font-bold">
-                      --:--
+                    <h3
+                      id="calendarTitle"
+                      class="mt-1 text-xl font-semibold text-slate-800"
+                    >
+                      July 2026
                     </h3>
                   </div>
 
-                  <div>
-                    <p class="text-sm text-indigo-200">Check Out</p>
+                  <div class="flex gap-2">
+                    <button
+                      id="prevMonth"
+                      class="rounded-xl border border-slate-200 px-3 py-2 hover:bg-slate-100"
+                    >
+                      ◀
+                    </button>
 
-                    <h3 id="checkOutTime" class="mt-2 text-2xl font-bold">
-                      --:--
+                    <button
+                      id="nextMonth"
+                      class="rounded-xl border border-slate-200 px-3 py-2 hover:bg-slate-100"
+                    >
+                      ▶
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Week -->
+                <div
+                  class="mt-6 grid grid-cols-7 gap-2 text-center text-xs font-semibold uppercase tracking-wide text-slate-400"
+                >
+                  <div>Sun</div>
+                  <div>Mon</div>
+                  <div>Tue</div>
+                  <div>Wed</div>
+                  <div>Thu</div>
+                  <div>Fri</div>
+                  <div>Sat</div>
+                </div>
+
+                <!-- Calendar -->
+                <div
+                  id="attendanceCalendar"
+                  class="mt-3 grid grid-cols-7 gap-2"
+                ></div>
+
+                <!-- Legend -->
+                <div class="mt-6 flex flex-wrap gap-5 text-sm">
+                  <div class="flex items-center gap-2">
+                    <span class="h-3 w-3 rounded-full bg-emerald-500"></span>
+                    Present
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <span class="h-3 w-3 rounded-full bg-amber-500"></span>
+                    Late
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <span class="h-3 w-3 rounded-full bg-red-500"></span>
+                    Absent
+                  </div>
+                </div>
+              </div>
+
+              <!-- ================= RIGHT : MONTHLY TREND ================= -->
+              <div class="rounded-3xl bg-white p-6 shadow-sm">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-sm text-slate-500">Monthly Trend</p>
+                    <h3 class="mt-1 text-xl font-semibold text-slate-800">
+                      Attendance Summary
                     </h3>
                   </div>
                 </div>
+
+                <div class="mt-6 h-[420px]">
+                  <canvas id="monthlyTrendChart"></canvas>
+                </div>
+                <div
+                  class="mt-5 flex items-center justify-center gap-8 text-sm"
+                >
+                  <div class="flex items-center gap-2">
+                    <span class="h-3 w-3 rounded-full bg-emerald-500"></span>
+                    <span class="text-slate-600">Present</span>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <span class="h-3 w-3 rounded-full bg-amber-500"></span>
+                    <span class="text-slate-600">Late</span>
+                  </div>
+
+                  <div class="flex items-center gap-2">
+                    <span class="h-3 w-3 rounded-full bg-red-500"></span>
+                    <span class="text-slate-600">Absent</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- bottom content -->
+            <div class="rounded-3xl bg-white p-6 shadow-sm">
+              <!-- Header -->
+              <div class="mb-5">
+                <p class="text-sm text-slate-500">Attendance History</p>
+                <h3 class="mt-1 text-xl font-semibold text-slate-800">
+                  Last 16 Attendance Records
+                </h3>
+              </div>
+
+              <!-- Slider -->
+              <div class="overflow-hidden">
+                <div
+                  id="historySlider"
+                  class="flex transition-transform duration-500 ease-in-out"
+                >
+                  <!-- Page 1 -->
+                  <div class="min-w-full space-y-3">
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>10 Jul 2026</span>
+                      <span
+                        class="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-700"
+                      >
+                        Present
+                      </span>
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>09 Jul 2026</span>
+                      <span
+                        class="rounded-full bg-amber-100 px-3 py-1 text-sm text-amber-700"
+                      >
+                        Late
+                      </span>
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>08 Jul 2026</span>
+                      <span
+                        class="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-700"
+                      >
+                        Present
+                      </span>
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>07 Jul 2026</span>
+                      <span
+                        class="rounded-full bg-red-100 px-3 py-1 text-sm text-red-700"
+                      >
+                        Absent
+                      </span>
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>06 Jul 2026</span>
+                      <span
+                        class="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-700"
+                      >
+                        Present
+                      </span>
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>05 Jul 2026</span>
+                      <span
+                        class="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-700"
+                      >
+                        Present
+                      </span>
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>04 Jul 2026</span>
+                      <span
+                        class="rounded-full bg-amber-100 px-3 py-1 text-sm text-amber-700"
+                      >
+                        Late
+                      </span>
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>03 Jul 2026</span>
+                      <span
+                        class="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-700"
+                      >
+                        Present
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Page 2 -->
+                  <div class="min-w-full space-y-3">
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>02 Jul 2026</span>
+                      <span
+                        class="rounded-full bg-red-100 px-3 py-1 text-sm text-red-700"
+                      >
+                        Absent
+                      </span>
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>01 Jul 2026</span>
+                      <span
+                        class="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-700"
+                      >
+                        Present
+                      </span>
+                    </div>
+
+                    <!-- Tambahkan 6 data lagi -->
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>30 Jun 2026</span
+                      ><span
+                        class="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-700"
+                        >Present</span
+                      >
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>29 Jun 2026</span
+                      ><span
+                        class="rounded-full bg-amber-100 px-3 py-1 text-sm text-amber-700"
+                        >Late</span
+                      >
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>28 Jun 2026</span
+                      ><span
+                        class="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-700"
+                        >Present</span
+                      >
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>27 Jun 2026</span
+                      ><span
+                        class="rounded-full bg-red-100 px-3 py-1 text-sm text-red-700"
+                        >Absent</span
+                      >
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>26 Jun 2026</span
+                      ><span
+                        class="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-700"
+                        >Present</span
+                      >
+                    </div>
+
+                    <div
+                      class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3"
+                    >
+                      <span>25 Jun 2026</span
+                      ><span
+                        class="rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-700"
+                        >Present</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Indicator -->
+              <div class="mt-6 flex items-center justify-center gap-4">
+                <button
+                  id="historyPrev"
+                  class="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 transition hover:bg-slate-100"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </button>
+
+                <div class="flex gap-2">
+                  <span
+                    id="dot0"
+                    class="h-2.5 w-2.5 rounded-full bg-indigo-600"
+                  ></span>
+                  <span
+                    id="dot1"
+                    class="h-2.5 w-2.5 rounded-full bg-slate-300"
+                  ></span>
+                </div>
+
+                <button
+                  id="historyNext"
+                  class="flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 transition hover:bg-slate-100"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
               </div>
             </div>
           </section>
