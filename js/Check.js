@@ -39,27 +39,21 @@ const coordinates = document.getElementById("coordinates");
 const refreshLocation = document.getElementById("refreshLocation");
 const checkInBtn = document.getElementById("checkInBtn");
 const checkOutBtn = document.getElementById("checkOutBtn");
-const checkInTime = document.getElementById("checkInTime");
-const checkOutTime = document.getElementById("checkOutTime");
-const attendanceStatus = document.getElementById("attendanceStatus");
+const checkInStatus = document.getElementById("checkInStatus");
+const checkOutStatus = document.getElementById("checkOutStatus");
 const cameraPreview = document.getElementById("cameraPreview");
+const cameraOverlay = document.getElementById("cameraOverlay");
 const attendanceMap = document.getElementById("attendanceMap");
+const toggleCameraBtn = document.getElementById("toggleCameraBtn");
 const headerTime = document.getElementById("headerTime");
 const headerDate = document.getElementById("headerDate");
 const heroTime = document.getElementById("heroTime");
 const heroDay = document.getElementById("heroDay");
 const heroDate = document.getElementById("heroDate");
 
-let checkInTimestamp = null;
-let checkOutTimestamp = null;
-
-function formatTime(date) {
-  return date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-}
+let stream = null;
+let checkedIn = false;
+let checkedOut = false;
 
 function updateClock() {
   const now = new Date();
@@ -81,28 +75,6 @@ function updateClock() {
   if (heroTime) heroTime.textContent = timeText;
   if (heroDay) heroDay.textContent = dayText;
   if (heroDate) heroDate.textContent = dateText;
-}
-
-function updateAttendanceUI() {
-  if (!checkInTimestamp && !checkOutTimestamp) {
-    attendanceStatus.textContent = "Not Checked In";
-    checkInTime.textContent = "--:--";
-    checkOutTime.textContent = "--:--";
-    checkInBtn.disabled = false;
-    checkOutBtn.disabled = true;
-  } else if (checkInTimestamp && !checkOutTimestamp) {
-    attendanceStatus.textContent = "Checked In";
-    checkInTime.textContent = formatTime(checkInTimestamp);
-    checkOutTime.textContent = "--:--";
-    checkInBtn.disabled = true;
-    checkOutBtn.disabled = false;
-  } else {
-    attendanceStatus.textContent = "Checked Out";
-    checkInTime.textContent = formatTime(checkInTimestamp);
-    checkOutTime.textContent = formatTime(checkOutTimestamp);
-    checkInBtn.disabled = true;
-    checkOutBtn.disabled = true;
-  }
 }
 
 async function getAddress(latitude, longitude) {
@@ -134,31 +106,36 @@ async function getAddress(latitude, longitude) {
   }
 }
 
-async function setLocation(position) {
+function setLocation(position) {
   const { latitude, longitude } = position.coords;
 
-  locationText.textContent = "Current location detected";
+  if (locationText) {
+    locationText.textContent = "Current location detected";
+  }
 
-  coordinates.innerHTML = `
-    Latitude: ${latitude.toFixed(6)}<br>
-    Longitude: ${longitude.toFixed(6)}
-  `;
+  if (coordinates) {
+    coordinates.innerHTML = `Latitude: ${latitude.toFixed(6)}<br>Longitude: ${longitude.toFixed(6)}`;
+  }
 
   if (attendanceMap) {
     attendanceMap.src = `https://maps.google.com/maps?q=${latitude},${longitude}&z=16&output=embed`;
   }
 
-  await getAddress(latitude, longitude);
+  getAddress(latitude, longitude);
 }
 
 function showLocationError() {
-  locationText.textContent = "Location unavailable";
+  if (locationText) {
+    locationText.textContent = "Location unavailable";
+  }
 
   if (locationAddress) {
     locationAddress.textContent = "Please allow location permission.";
   }
 
-  coordinates.textContent = "Latitude: - | Longitude: -";
+  if (coordinates) {
+    coordinates.textContent = "Latitude: - | Longitude: -";
+  }
 }
 
 function requestLocation() {
@@ -176,39 +153,110 @@ function requestLocation() {
 
 async function startCamera() {
   if (!cameraPreview || !navigator.mediaDevices?.getUserMedia) {
-    locationText.textContent = "Camera unavailable";
+    if (locationText) {
+      locationText.textContent = "Camera unavailable";
+    }
     return;
   }
 
   try {
-    const stream = await navigator.mediaDevices.getUserMedia({
+    stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: "user" },
       audio: false,
     });
 
-    cameraPreview.srcObject = stream;
+    if (cameraPreview) {
+      cameraPreview.srcObject = stream;
+      cameraPreview.classList.remove("hidden");
+    }
+
+    if (cameraOverlay) {
+      cameraOverlay.classList.add("hidden");
+    }
+
+    if (toggleCameraBtn) {
+      toggleCameraBtn.textContent = "Turn Camera Off";
+    }
   } catch (error) {
     console.error(error);
-    locationText.textContent = "Unable to access the camera";
+    if (locationText) {
+      locationText.textContent = "Unable to access the camera";
+    }
+  }
+}
+
+function stopCamera() {
+  if (stream) {
+    stream.getTracks().forEach((track) => track.stop());
+    stream = null;
+  }
+
+  if (cameraPreview) {
+    cameraPreview.srcObject = null;
+    cameraPreview.classList.add("hidden");
+  }
+
+  if (cameraOverlay) {
+    cameraOverlay.classList.remove("hidden");
+  }
+
+  if (toggleCameraBtn) {
+    toggleCameraBtn.textContent = "Turn Camera On";
   }
 }
 
 checkInBtn?.addEventListener("click", () => {
-  checkInTimestamp = new Date();
-  checkOutTimestamp = null;
-  updateAttendanceUI();
+  if (checkedIn) return;
+
+  checkedIn = true;
+  checkedOut = false;
+
+  checkInBtn.disabled = true;
+  checkInBtn.classList.remove("bg-emerald-600", "hover:bg-emerald-700");
+  checkInBtn.classList.add("bg-slate-300", "cursor-not-allowed");
+
+  if (checkInStatus) {
+    checkInStatus.textContent = "Status: Checked In";
+    checkInStatus.className = "text-center text-xs text-emerald-600";
+  }
+
+  if (checkOutBtn) {
+    checkOutBtn.disabled = false;
+    checkOutBtn.classList.remove("bg-slate-300", "cursor-not-allowed");
+    checkOutBtn.classList.add("bg-rose-600", "hover:bg-rose-700");
+  }
+
+  if (checkOutStatus) {
+    checkOutStatus.textContent = "Status: Ready";
+    checkOutStatus.className = "text-center text-xs text-slate-500";
+  }
 });
 
 checkOutBtn?.addEventListener("click", () => {
-  if (!checkInTimestamp) return;
-  checkOutTimestamp = new Date();
-  updateAttendanceUI();
+  if (!checkedIn || checkedOut) return;
+
+  checkedOut = true;
+
+  checkOutBtn.disabled = true;
+  checkOutBtn.classList.remove("bg-rose-600", "hover:bg-rose-700");
+  checkOutBtn.classList.add("bg-slate-300", "cursor-not-allowed");
+
+  if (checkOutStatus) {
+    checkOutStatus.textContent = "Status: Completed";
+    checkOutStatus.className = "text-center text-xs text-emerald-600";
+  }
+});
+
+toggleCameraBtn?.addEventListener("click", () => {
+  if (stream) {
+    stopCamera();
+  } else {
+    startCamera();
+  }
 });
 
 refreshLocation?.addEventListener("click", requestLocation);
 
 updateClock();
 setInterval(updateClock, 1000);
-updateAttendanceUI();
 requestLocation();
-startCamera();
