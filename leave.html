@@ -174,11 +174,11 @@
             </a>
 
             <a
-              href="#"
-              class="flex items-center gap-3 rounded-2xl bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-700"
+              href="schedule.html"
+              class="flex items-center gap-3 rounded-2xl px-3 py-1 text-sm font-medium text-slate-200 transition hover:bg-white/10"
             >
               <span
-                class="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-100"
+                class="flex h-8 w-8 items-center justify-center rounded-xl bg-white/10"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -199,11 +199,11 @@
             </a>
 
             <a
-              href="leave.html"
-              class="flex items-center gap-3 rounded-2xl px-3 py-1 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+              href="#"
+              class="flex items-center gap-3 rounded-2xl bg-indigo-50 px-3 py-1 text-sm font-semibold text-indigo-700"
             >
               <span
-                class="flex h-8 w-8 items-center justify-center rounded-xl bg-white/10"
+                class="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-100"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -466,118 +466,28 @@
 
           <!-- Content -->
           <section class="space-y-6 p-4 sm:p-6">
-            <!-- Clock cards -->
             <div
               class="flex flex-col gap-3 rounded-2xl bg-white p-2 shadow-sm md:flex-row md:items-center md:justify-between"
             >
               <!-- Left : Legend -->
 
-              <div class="pl-4 flex flex-wrap gap-5 text-sm">
-                LEGEND:
-                <div class="flex items-center gap-2">
-                  <span class="h-3 w-3 rounded-full bg-blue-500"></span>
-                  Work Shift
-                </div>
-
-                <div class="flex items-center gap-2">
-                  <span class="h-3 w-3 rounded-full bg-purple-500"></span>
-                  Meeting
-                </div>
-
-                <div class="flex items-center gap-2">
-                  <span class="h-3 w-3 rounded-full bg-amber-500"></span>
-                  Training
-                </div>
-
-                <div class="flex items-center gap-2">
-                  <span class="h-3 w-3 rounded-full bg-emerald-500"></span>
-                  Break
-                </div>
-
-                <div class="flex items-center gap-2">
-                  <span class="h-3 w-3 rounded-full bg-red-500"></span>
-                  Off
-                </div>
+              <div class="pl-4 flex flex-wrap gap-5">
+                <h1 class="text-2xl font-semibold text-slate-800">
+                  Leave Request
+                </h1>
               </div>
 
               <!-- Right : Add Button -->
               <button
                 class="flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
               >
-                + Add Schedule
+                + Request Leave
               </button>
             </div>
 
             <!-- Main grid -->
             <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <!-- Today's Shift -->
-              <div
-                class="flex items-center gap-4 rounded-3xl bg-white p-5 shadow-sm"
-              >
-                <div
-                  class="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-600"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-7 w-7"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                </div>
-
-                <div>
-                  <p class="text-sm text-slate-500">Today's Shift</p>
-                  <h2 id="todayShift" class="text-3xl font-bold text-blue-600">
-                    08:00 - 17:00
-                  </h2>
-                  <p class="text-sm text-slate-500">Scheduled for today</p>
-                </div>
-              </div>
-
-              <!-- Shifts This Week -->
-              <div
-                class="flex items-center gap-4 rounded-3xl bg-white p-5 shadow-sm"
-              >
-                <div
-                  class="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-7 w-7"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                </div>
-
-                <div>
-                  <p class="text-sm text-slate-500">Shifts This Week</p>
-                  <h2
-                    id="weeklyShifts"
-                    class="text-3xl font-bold text-emerald-600"
-                  >
-                    8
-                  </h2>
-                  <p class="text-sm text-slate-500">Total scheduled shifts</p>
-                </div>
-              </div>
-
-              <!-- Upcoming -->
+              <!-- Pending -->
               <div
                 class="flex items-center gap-4 rounded-3xl bg-white p-5 shadow-sm"
               >
@@ -601,23 +511,23 @@
                 </div>
 
                 <div>
-                  <p class="text-sm text-slate-500">Upcoming</p>
+                  <p class="text-sm text-slate-500">Pending</p>
                   <h2
                     id="upcomingShifts"
                     class="text-3xl font-bold text-amber-500"
                   >
                     3
                   </h2>
-                  <p class="text-sm text-slate-500">Upcoming shifts & events</p>
+                  <p class="text-sm text-slate-500">Waiting Approval</p>
                 </div>
               </div>
 
-              <!-- Hours / Week -->
+              <!-- Approved -->
               <div
                 class="flex items-center gap-4 rounded-3xl bg-white p-5 shadow-sm"
               >
                 <div
-                  class="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-100 text-purple-600"
+                  class="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-600"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -630,118 +540,143 @@
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M9 17v-6m3 6V7m3 10v-3m3 7H6a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2v14a2 2 0 01-2 2z"
+                      d="M12 21C7.03 21 3 16.97 3 12S7.03 3 12 3s9 4.03 9 9-4.03 9-9 9zm-3-9l2 2 4-4"
                     />
                   </svg>
                 </div>
 
                 <div>
-                  <p class="text-sm text-slate-500">Hours / Week</p>
+                  <p class="text-sm text-slate-500">Approved (YTD)</p>
                   <h2
-                    id="weeklyHours"
-                    class="text-3xl font-bold text-purple-600"
+                    id="weeklyShifts"
+                    class="text-3xl font-bold text-emerald-600"
                   >
-                    40h
+                    8
                   </h2>
-                  <p class="text-sm text-slate-500">Total scheduled hours</p>
+                  <p class="text-sm text-slate-500">Approved this year</p>
+                </div>
+              </div>
+
+              <!-- reject -->
+              <div
+                class="flex items-center gap-4 rounded-3xl bg-white p-5 shadow-sm"
+              >
+                <div
+                  class="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100 text-red-600"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-7 w-7"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 21a9 9 0 100-18 9 9 0 000 18z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 9l6 6"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 9l-6 6"
+                    />
+                  </svg>
+                </div>
+
+                <div>
+                  <p class="text-sm text-slate-500">Rejected (YTD)</p>
+                  <h2 id="weeklyHours" class="text-3xl font-bold text-red-600">
+                    1
+                  </h2>
+                  <p class="text-sm text-slate-500">Rejected this year</p>
+                </div>
+              </div>
+
+              <!-- day taken -->
+              <div
+                class="flex items-center gap-4 rounded-3xl bg-white p-5 shadow-sm"
+              >
+                <div
+                  class="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-600"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-7 w-7"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+
+                <div>
+                  <p class="text-sm text-slate-500">Day's Taken</p>
+                  <h2 id="todayShift" class="text-3xl font-bold text-blue-600">
+                    13
+                  </h2>
+                  <p class="text-sm text-slate-500">
+                    Total days of leave this year
+                  </p>
                 </div>
               </div>
             </div>
 
             <div class="grid gap-6 lg:grid-cols-2">
-              <!-- ================= LEFT : schedule ================= -->
+              <!-- ================= LEFT : annual leave ================= -->
               <div class="rounded-3xl bg-white p-6 shadow-sm">
-                <p
-                  id="locationAddress"
-                  class="mt-2 text-sm leading-6 text-slate-600"
-                >
-                  jadwal
-                </p>
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-sm text-slate-500">Upcoming Leave</p>
+                    <h3 class="mt-1 text-xl font-semibold text-slate-800">
+                      Approved Leave
+                    </h3>
+                  </div>
+
+                  <span
+                    id="upcomingLeaveCount"
+                    class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700"
+                  >
+                    0 Leaves
+                  </span>
+                </div>
+
+                <div id="upcomingLeaveList" class="mt-6 space-y-4"></div>
               </div>
 
-              <!-- ================= RIGHT : upcoming ================= -->
+              <!-- ================= RIGHT : team leave ================= -->
               <div class="rounded-3xl bg-white p-6 shadow-sm">
-                <div class="rounded-3xl bg-white p-6 shadow-sm">
-                  <div class="mb-5 flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-slate-800">
-                      Upcoming Events
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-sm text-slate-500">Team Leave</p>
+                    <h3 class="mt-1 text-xl font-semibold text-slate-800">
+                      On Leave & Upcoming
                     </h3>
-                    <span class="text-sm text-slate-500">Next 5</span>
                   </div>
 
-                  <div class="space-y-4">
-                    <!-- Work Shift -->
-                    <div class="flex items-start gap-3">
-                      <span
-                        class="mt-2 h-3 w-3 rounded-full bg-blue-500"
-                      ></span>
-                      <div>
-                        <h4 class="font-medium text-slate-800">
-                          Morning Shift
-                        </h4>
-                        <p class="text-sm text-slate-500">
-                          Monday, 14 Jul • 08:00 - 16:00
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Meeting -->
-                    <div class="flex items-start gap-3">
-                      <span
-                        class="mt-2 h-3 w-3 rounded-full bg-purple-500"
-                      ></span>
-                      <div>
-                        <h4 class="font-medium text-slate-800">
-                          Weekly Team Meeting
-                        </h4>
-                        <p class="text-sm text-slate-500">
-                          Tuesday, 15 Jul • 10:00 - 11:00
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Training -->
-                    <div class="flex items-start gap-3">
-                      <span
-                        class="mt-2 h-3 w-3 rounded-full bg-amber-500"
-                      ></span>
-                      <div>
-                        <h4 class="font-medium text-slate-800">
-                          Safety Training
-                        </h4>
-                        <p class="text-sm text-slate-500">
-                          Wednesday, 16 Jul • 13:00 - 15:00
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Break -->
-                    <div class="flex items-start gap-3">
-                      <span
-                        class="mt-2 h-3 w-3 rounded-full bg-emerald-500"
-                      ></span>
-                      <div>
-                        <h4 class="font-medium text-slate-800">Lunch Break</h4>
-                        <p class="text-sm text-slate-500">
-                          Thursday, 17 Jul • 12:00 - 13:00
-                        </p>
-                      </div>
-                    </div>
-
-                    <!-- Off -->
-                    <div class="flex items-start gap-3">
-                      <span
-                        class="mt-2 h-3 w-3 rounded-full bg-gray-500"
-                      ></span>
-                      <div>
-                        <h4 class="font-medium text-slate-800">Day Off</h4>
-                        <p class="text-sm text-slate-500">
-                          Friday, 18 Jul • Full Day
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+                  <span
+                    id="teamLeaveCount"
+                    class="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700"
+                  >
+                    4 Members
+                  </span>
                 </div>
+
+                <div id="teamLeaveList" class="mt-6 space-y-4"></div>
               </div>
             </div>
 
@@ -846,6 +781,6 @@
       </div>
     </div>
 
-    <script src="js/schedule.js"></script>
+    <script src="js/leave.js"></script>
   </body>
 </html>
