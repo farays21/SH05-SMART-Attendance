@@ -219,3 +219,71 @@ document.getElementById("teamLeaveList").innerHTML = teamLeaves
     `,
   )
   .join("");
+
+const searchLeave = document.getElementById("searchLeave");
+const filterType = document.getElementById("filterType");
+const filterStatus = document.getElementById("filterStatus");
+const filterYear = document.getElementById("filterYear");
+const resetFilter = document.getElementById("resetFilter");
+
+resetFilter.addEventListener("click", () => {
+  searchLeave.value = "";
+  filterType.selectedIndex = 0;
+  filterStatus.selectedIndex = 0;
+  filterYear.selectedIndex = 0;
+});
+
+const rowsPerPage = 8;
+const tbody = document.querySelector("tbody");
+const rows = [...tbody.querySelectorAll("tr")];
+
+const prevBtn = document.getElementById("prevPage");
+const nextBtn = document.getElementById("nextPage");
+const pageIndicator = document.getElementById("pageIndicator");
+
+const startItem = document.getElementById("startItem");
+const endItem = document.getElementById("endItem");
+const totalItems = document.getElementById("totalItems");
+
+let currentPage = 1;
+
+function renderTable() {
+  const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+  rows.forEach((row, index) => {
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+
+    row.classList.toggle("hidden", !(index >= start && index < end));
+  });
+
+  const start = (currentPage - 1) * rowsPerPage + 1;
+  const end = Math.min(currentPage * rowsPerPage, rows.length);
+
+  startItem.textContent = rows.length ? start : 0;
+  endItem.textContent = end;
+  totalItems.textContent = rows.length;
+
+  pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
+
+  prevBtn.disabled = currentPage === 1;
+  nextBtn.disabled = currentPage === totalPages;
+}
+
+prevBtn.addEventListener("click", () => {
+  if (currentPage > 1) {
+    currentPage--;
+    renderTable();
+  }
+});
+
+nextBtn.addEventListener("click", () => {
+  const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+  if (currentPage < totalPages) {
+    currentPage++;
+    renderTable();
+  }
+});
+
+renderTable();
