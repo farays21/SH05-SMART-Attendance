@@ -720,9 +720,9 @@
               </div>
             </div>
 
-            <div class="grid gap-6 lg:grid-cols-2">
+            <div class="grid gap-6 lg:grid-cols-11">
               <!-- ================= LEFT : permission ================= -->
-              <div class="rounded-3xl bg-white p-6 shadow-sm">
+              <div class="rounded-3xl bg-white p-6 shadow-sm lg:col-span-6">
                 <div class="flex items-center justify-between">
                   <div>
                     <h3 class="mt-1 text-xl font-semibold text-slate-800">
@@ -732,20 +732,13 @@
                       Permission Timeline for today
                     </p>
                   </div>
-
-                  <button
-                    id="addPermission"
-                    class="rounded-3xl bg-indigo-500 px-3 py-5 text-xs font-medium text-white"
-                  >
-                    + Add Permissions
-                  </button>
                 </div>
 
                 <div id="upcomingPermissionList" class="mt-6 space-y-4"></div>
               </div>
 
               <!-- ================= RIGHT : team permission ================= -->
-              <div class="rounded-3xl bg-white p-6 shadow-sm">
+              <div class="rounded-3xl bg-white p-6 shadow-sm lg:col-span-5">
                 <div class="flex items-center justify-between">
                   <div>
                     <h3 class="mt-1 text-xl font-semibold text-slate-800">
@@ -764,7 +757,7 @@
                   </span>
                 </div>
 
-                <div id="teamPermissionList" class="mt-6 space-y-4"></div>
+                <div id="teamPermissionList" class="mt-6 space-y-1"></div>
               </div>
             </div>
 

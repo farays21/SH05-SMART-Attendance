@@ -648,19 +648,54 @@
               </div>
             </div>
 
-            <div class="grid gap-6 lg:grid-cols-2">
+            <div class="grid gap-6 lg:grid-cols-5">
               <!-- ================= LEFT : schedule ================= -->
-              <div class="rounded-3xl bg-white p-6 shadow-sm">
-                <p
-                  id="locationAddress"
-                  class="mt-2 text-sm leading-6 text-slate-600"
+
+              <div class="rounded-3xl bg-white p-6 shadow-sm lg:col-span-3">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-sm text-slate-500">Today's Schedule</p>
+                    <h3 class="mt-1 text-xl font-semibold text-slate-800">
+                      07:00 - 19:00
+                    </h3>
+                  </div>
+                  <span
+                    class="rounded-full bg-indigo-50 px-3 py-1 text-sm font-medium text-indigo-600"
+                  >
+                    Today
+                  </span>
+                </div>
+
+                <div
+                  class="mt-5 flex flex-wrap items-center gap-3 text-xs text-slate-600"
                 >
-                  jadwal
-                </p>
+                  <span class="flex items-center gap-1.5"
+                    ><span class="h-2.5 w-2.5 rounded-sm bg-blue-500"></span
+                    >Work Shift</span
+                  >
+                  <span class="flex items-center gap-1.5"
+                    ><span class="h-2.5 w-2.5 rounded-sm bg-purple-500"></span
+                    >Meeting</span
+                  >
+                  <span class="flex items-center gap-1.5"
+                    ><span class="h-2.5 w-2.5 rounded-sm bg-amber-500"></span
+                    >Training</span
+                  >
+                  <span class="flex items-center gap-1.5"
+                    ><span class="h-2.5 w-2.5 rounded-sm bg-emerald-500"></span
+                    >Break</span
+                  >
+                </div>
+
+                <div id="timeline" class="relative mt-6">
+                  <!-- diisi otomatis oleh script.js -->
+                </div>
               </div>
 
               <!-- ================= RIGHT : upcoming ================= -->
-              <div class="rounded-3xl bg-white p-6 shadow-sm">
+              <div
+                class="mx-auto max-w-md rounded-3xl bg-white p-6 shadow-sm lg:col-span-2"
+              >
                 <div class="rounded-3xl bg-white p-6 shadow-sm">
                   <div class="mb-5 flex items-center justify-between">
                     <h3 class="text-lg font-semibold text-slate-800">
@@ -669,9 +704,9 @@
                     <span class="text-sm text-slate-500">Next 5</span>
                   </div>
 
-                  <div class="space-y-4">
+                  <div class="space-y-2">
                     <!-- Work Shift -->
-                    <div class="flex items-start gap-3">
+                    <div class="flex rounded-xl pl-3 items-start border gap-3">
                       <span
                         class="mt-2 h-3 w-3 rounded-full bg-blue-500"
                       ></span>
@@ -686,7 +721,7 @@
                     </div>
 
                     <!-- Meeting -->
-                    <div class="flex items-start gap-3">
+                    <div class="flex rounded-xl pl-3 items-start border gap-3">
                       <span
                         class="mt-2 h-3 w-3 rounded-full bg-purple-500"
                       ></span>
@@ -701,7 +736,7 @@
                     </div>
 
                     <!-- Training -->
-                    <div class="flex items-start gap-3">
+                    <div class="flex rounded-xl pl-3 items-start border gap-3">
                       <span
                         class="mt-2 h-3 w-3 rounded-full bg-amber-500"
                       ></span>
@@ -716,7 +751,7 @@
                     </div>
 
                     <!-- Break -->
-                    <div class="flex items-start gap-3">
+                    <div class="flex rounded-xl pl-3 items-start border gap-3">
                       <span
                         class="mt-2 h-3 w-3 rounded-full bg-emerald-500"
                       ></span>
@@ -729,7 +764,7 @@
                     </div>
 
                     <!-- Off -->
-                    <div class="flex items-start gap-3">
+                    <div class="flex rounded-xl pl-3 items-start border gap-3">
                       <span
                         class="mt-2 h-3 w-3 rounded-full bg-gray-500"
                       ></span>
