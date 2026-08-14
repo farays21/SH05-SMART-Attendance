@@ -145,3 +145,115 @@ schedule.forEach((item) => {
 
   timeline.appendChild(block);
 });
+
+// Schedule table
+const scheduleRows = Array.from(document.querySelectorAll(".schedule-row"));
+
+const scheduleType = document.getElementById("scheduleType");
+const scheduleStatus = document.getElementById("scheduleStatus");
+
+const schedulePrev = document.getElementById("schedulePrev");
+const scheduleNext = document.getElementById("scheduleNext");
+
+const schedulePage = document.getElementById("schedulePage");
+const scheduleStart = document.getElementById("scheduleStart");
+const scheduleEnd = document.getElementById("scheduleEnd");
+const scheduleTotal = document.getElementById("scheduleTotal");
+
+const scheduleEmpty = document.getElementById("scheduleEmpty");
+const scheduleTableBody = document.getElementById("scheduleTableBody");
+
+const SCHEDULES_PER_PAGE = 8;
+
+let currentSchedulePage = 1;
+let filteredSchedules = [...scheduleRows];
+
+function filterSchedules() {
+  const type = scheduleType.value;
+  const status = scheduleStatus.value;
+
+  filteredSchedules = scheduleRows.filter((row) => {
+    const rowType = row.dataset.type;
+    const rowStatus = row.dataset.status;
+
+    const typeMatch = type === "all" || rowType === type;
+
+    const statusMatch = status === "all" || rowStatus === status;
+
+    return typeMatch && statusMatch;
+  });
+
+  currentSchedulePage = 1;
+
+  renderSchedules();
+}
+
+function renderSchedules() {
+  scheduleRows.forEach((row) => {
+    row.classList.add("hidden");
+  });
+
+  const total = filteredSchedules.length;
+
+  const totalPages = Math.max(1, Math.ceil(total / SCHEDULES_PER_PAGE));
+
+  if (currentSchedulePage > totalPages) {
+    currentSchedulePage = totalPages;
+  }
+
+  const startIndex = (currentSchedulePage - 1) * SCHEDULES_PER_PAGE;
+
+  const endIndex = Math.min(startIndex + SCHEDULES_PER_PAGE, total);
+
+  const visibleRows = filteredSchedules.slice(startIndex, endIndex);
+
+  visibleRows.forEach((row) => {
+    row.classList.remove("hidden");
+  });
+
+  // Empty state
+  if (total === 0) {
+    scheduleEmpty.classList.remove("hidden");
+    scheduleTableBody.classList.add("hidden");
+  } else {
+    scheduleEmpty.classList.add("hidden");
+    scheduleTableBody.classList.remove("hidden");
+  }
+
+  // Pagination information
+  scheduleStart.textContent = total === 0 ? 0 : startIndex + 1;
+
+  scheduleEnd.textContent = endIndex;
+
+  scheduleTotal.textContent = total;
+
+  schedulePage.textContent = currentSchedulePage;
+
+  // Buttons
+  schedulePrev.disabled = currentSchedulePage === 1;
+
+  scheduleNext.disabled = currentSchedulePage >= totalPages;
+}
+
+scheduleType.addEventListener("change", filterSchedules);
+
+scheduleStatus.addEventListener("change", filterSchedules);
+
+schedulePrev.addEventListener("click", () => {
+  if (currentSchedulePage > 1) {
+    currentSchedulePage--;
+    renderSchedules();
+  }
+});
+
+scheduleNext.addEventListener("click", () => {
+  const totalPages = Math.ceil(filteredSchedules.length / SCHEDULES_PER_PAGE);
+
+  if (currentSchedulePage < totalPages) {
+    currentSchedulePage++;
+    renderSchedules();
+  }
+});
+
+// Initial render
+renderSchedules();

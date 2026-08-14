@@ -274,7 +274,7 @@
             </a>
 
             <a
-              href="#"
+              href="report.html"
               class="flex items-center gap-3 rounded-2xl px-3 py-1 text-sm font-medium text-slate-200 transition hover:bg-white/10"
             >
               <span
@@ -299,7 +299,7 @@
             </a>
 
             <a
-              href="#"
+              href="notification.html"
               class="flex items-center gap-3 rounded-2xl px-3 py-1 text-sm font-medium text-slate-200 transition hover:bg-white/10"
             >
               <span
@@ -324,7 +324,7 @@
             </a>
 
             <a
-              href="#"
+              href="profile.html"
               class="flex items-center gap-3 rounded-2xl px-3 py-1 text-sm font-medium text-slate-200 transition hover:bg-white/10"
             >
               <span
@@ -346,31 +346,6 @@
                 </svg>
               </span>
               Profile
-            </a>
-
-            <a
-              href="#"
-              class="flex items-center gap-3 rounded-2xl px-3 py-1 text-sm font-medium text-red-200 transition hover:bg-red-500/10"
-            >
-              <span
-                class="flex h-8 w-8 items-center justify-center rounded-xl bg-red-500/10"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-10V7m-7 12h8a2 2 0 002-2V7a2 2 0 00-2-2H6a2 2 0 00-2 2v10a2 2 0 002 2z"
-                  />
-                </svg>
-              </span>
-              Logout
             </a>
           </nav>
 
@@ -781,98 +756,1192 @@
             </div>
 
             <!-- bottom content -->
-            <div
-              class="rounded-3xl bg-gradient-to-br from-indigo-600 to-blue-500 p-6 text-white shadow-sm"
-            >
-              <div class="rounded-3xl bg-white p-6 shadow-sm">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-sm text-slate-500">Attendance Calendar</p>
-                    <h3 class="mt-1 text-xl font-semibold text-slate-800">
-                      July 2026
-                    </h3>
-                  </div>
+            <!-- Weekly Schedule Timeline -->
+            <div class="rounded-3xl bg-white shadow-sm">
+              <!-- Header -->
+              <div
+                class="flex items-center justify-between border-b border-slate-100 px-5 py-4"
+              >
+                <div>
+                  <h2 class="text-base font-semibold text-slate-800">
+                    Weekly Schedule
+                  </h2>
+
+                  <p id="weekRange" class="mt-0.5 text-xs text-slate-500">
+                    20 - 26 July 2026
+                  </p>
+                </div>
+
+                <!-- Week Pagination -->
+                <div class="flex items-center gap-1.5">
+                  <button
+                    id="prevWeek"
+                    type="button"
+                    class="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-50"
+                    aria-label="Previous week"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-3.5 w-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                  </button>
 
                   <button
-                    id="changeMonth"
-                    class="rounded-xl border border-slate-200 px-4 py-2 text-sm transition hover:bg-slate-100"
+                    id="todayWeek"
+                    type="button"
+                    class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50"
                   >
-                    Change Month
+                    Today
+                  </button>
+
+                  <button
+                    id="nextWeek"
+                    type="button"
+                    class="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-50"
+                    aria-label="Next week"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-3.5 w-3.5"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
                   </button>
                 </div>
+              </div>
 
-                <!-- Week Header -->
+              <!-- Timeline -->
+              <div class="px-4 py-4">
+                <!-- 7 days x 12 hours -->
+                <div class="grid grid-cols-[52px_repeat(7,minmax(0,1fr))]">
+                  <!-- Time header -->
+                  <div class="border-b border-slate-200"></div>
+
+                  <!-- Monday -->
+                  <div
+                    class="border-b border-l border-slate-200 px-1 pb-2 text-center"
+                  >
+                    <p class="text-[10px] font-medium uppercase text-slate-400">
+                      Mon
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700">20</p>
+                  </div>
+
+                  <!-- Tuesday -->
+                  <div
+                    class="border-b border-l border-slate-200 px-1 pb-2 text-center"
+                  >
+                    <p class="text-[10px] font-medium uppercase text-slate-400">
+                      Tue
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700">21</p>
+                  </div>
+
+                  <!-- Wednesday -->
+                  <div
+                    class="border-b border-l border-slate-200 px-1 pb-2 text-center"
+                  >
+                    <p class="text-[10px] font-medium uppercase text-slate-400">
+                      Wed
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700">22</p>
+                  </div>
+
+                  <!-- Thursday -->
+                  <div
+                    class="border-b border-l border-slate-200 px-1 pb-2 text-center"
+                  >
+                    <p class="text-[10px] font-medium uppercase text-slate-400">
+                      Thu
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700">23</p>
+                  </div>
+
+                  <!-- Friday -->
+                  <div
+                    class="border-b border-l border-slate-200 px-1 pb-2 text-center"
+                  >
+                    <p class="text-[10px] font-medium uppercase text-slate-400">
+                      Fri
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700">24</p>
+                  </div>
+
+                  <!-- Saturday -->
+                  <div
+                    class="border-b border-l border-slate-200 px-1 pb-2 text-center"
+                  >
+                    <p class="text-[10px] font-medium uppercase text-slate-400">
+                      Sat
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700">25</p>
+                  </div>
+
+                  <!-- Sunday -->
+                  <div
+                    class="border-b border-l border-slate-200 px-1 pb-2 text-center"
+                  >
+                    <p class="text-[10px] font-medium uppercase text-slate-400">
+                      Sun
+                    </p>
+                    <p class="text-sm font-semibold text-slate-700">26</p>
+                  </div>
+
+                  <!-- Time column -->
+                  <div class="relative">
+                    <div
+                      class="h-12 border-b border-slate-100 pt-1 text-[10px] text-slate-400"
+                    >
+                      07:00
+                    </div>
+
+                    <div
+                      class="h-12 border-b border-slate-100 pt-1 text-[10px] text-slate-400"
+                    >
+                      08:00
+                    </div>
+
+                    <div
+                      class="h-12 border-b border-slate-100 pt-1 text-[10px] text-slate-400"
+                    >
+                      09:00
+                    </div>
+
+                    <div
+                      class="h-12 border-b border-slate-100 pt-1 text-[10px] text-slate-400"
+                    >
+                      10:00
+                    </div>
+
+                    <div
+                      class="h-12 border-b border-slate-100 pt-1 text-[10px] text-slate-400"
+                    >
+                      11:00
+                    </div>
+
+                    <div
+                      class="h-12 border-b border-slate-100 pt-1 text-[10px] text-slate-400"
+                    >
+                      12:00
+                    </div>
+
+                    <div
+                      class="h-12 border-b border-slate-100 pt-1 text-[10px] text-slate-400"
+                    >
+                      13:00
+                    </div>
+
+                    <div
+                      class="h-12 border-b border-slate-100 pt-1 text-[10px] text-slate-400"
+                    >
+                      14:00
+                    </div>
+
+                    <div
+                      class="h-12 border-b border-slate-100 pt-1 text-[10px] text-slate-400"
+                    >
+                      15:00
+                    </div>
+
+                    <div
+                      class="h-12 border-b border-slate-100 pt-1 text-[10px] text-slate-400"
+                    >
+                      16:00
+                    </div>
+
+                    <div
+                      class="h-12 border-b border-slate-100 pt-1 text-[10px] font-medium text-slate-500"
+                    >
+                      17:00
+                    </div>
+
+                    <div
+                      class="h-12 border-b border-slate-100 pt-1 text-[10px] text-slate-400"
+                    >
+                      18:00
+                    </div>
+
+                    <div class="h-12 pt-1 text-[10px] text-slate-400">
+                      19:00
+                    </div>
+                  </div>
+
+                  <!-- MONDAY -->
+                  <div class="relative border-l border-slate-100">
+                    <!-- Working Area -->
+                    <div
+                      class="absolute inset-x-0 top-12 h-[432px] bg-emerald-50/30"
+                    ></div>
+
+                    <!-- Work Shift -->
+                    <div
+                      class="absolute left-0.5 right-0.5 top-12 h-[432px] rounded-lg bg-emerald-50 ring-1 ring-inset ring-emerald-100"
+                    >
+                      <div class="p-1.5">
+                        <span
+                          class="block truncate text-[10px] font-semibold text-emerald-700"
+                        >
+                          Work Shift
+                        </span>
+
+                        <span
+                          class="mt-0.5 block truncate text-[9px] text-emerald-600"
+                        >
+                          08:00 - 17:00
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Meeting -->
+                    <div
+                      class="absolute left-1 right-1 top-24 h-12 rounded-md bg-indigo-100 px-1.5 py-1"
+                    >
+                      <p
+                        class="truncate text-[10px] font-semibold text-indigo-700"
+                      >
+                        Team Meeting
+                      </p>
+                      <p class="truncate text-[9px] text-indigo-600">
+                        09:00 - 10:00
+                      </p>
+                    </div>
+
+                    <!-- Break -->
+                    <div
+                      class="absolute left-1 right-1 top-[264px] h-12 rounded-md bg-amber-100 px-1.5 py-1"
+                    >
+                      <p
+                        class="truncate text-[10px] font-semibold text-amber-700"
+                      >
+                        Lunch Break
+                      </p>
+                      <p class="truncate text-[9px] text-amber-600">
+                        12:00 - 13:00
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- TUESDAY -->
+                  <div class="relative border-l border-slate-100">
+                    <div
+                      class="absolute inset-x-0 top-12 h-[432px] bg-emerald-50/30"
+                    ></div>
+
+                    <div
+                      class="absolute left-0.5 right-0.5 top-12 h-[432px] rounded-lg bg-emerald-50 ring-1 ring-inset ring-emerald-100"
+                    >
+                      <div class="p-1.5">
+                        <span
+                          class="block truncate text-[10px] font-semibold text-emerald-700"
+                        >
+                          Work Shift
+                        </span>
+
+                        <span
+                          class="mt-0.5 block truncate text-[9px] text-emerald-600"
+                        >
+                          08:00 - 17:00
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Training -->
+                    <div
+                      class="absolute left-1 right-1 top-36 h-24 rounded-md bg-violet-100 px-1.5 py-1"
+                    >
+                      <p
+                        class="truncate text-[10px] font-semibold text-violet-700"
+                      >
+                        Safety Training
+                      </p>
+
+                      <p class="truncate text-[9px] text-violet-600">
+                        10:00 - 12:00
+                      </p>
+                    </div>
+
+                    <!-- Break -->
+                    <div
+                      class="absolute left-1 right-1 top-[264px] h-12 rounded-md bg-amber-100 px-1.5 py-1"
+                    >
+                      <p
+                        class="truncate text-[10px] font-semibold text-amber-700"
+                      >
+                        Lunch Break
+                      </p>
+
+                      <p class="truncate text-[9px] text-amber-600">
+                        12:00 - 13:00
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- WEDNESDAY -->
+                  <div class="relative border-l border-slate-100">
+                    <div
+                      class="absolute inset-x-0 top-12 h-[432px] bg-emerald-50/30"
+                    ></div>
+
+                    <div
+                      class="absolute left-0.5 right-0.5 top-12 h-[432px] rounded-lg bg-emerald-50 ring-1 ring-inset ring-emerald-100"
+                    >
+                      <div class="p-1.5">
+                        <span
+                          class="block truncate text-[10px] font-semibold text-emerald-700"
+                        >
+                          Work Shift
+                        </span>
+
+                        <span
+                          class="mt-0.5 block truncate text-[9px] text-emerald-600"
+                        >
+                          08:00 - 17:00
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Meeting -->
+                    <div
+                      class="absolute left-1 right-1 top-[360px] h-12 rounded-md bg-indigo-100 px-1.5 py-1"
+                    >
+                      <p
+                        class="truncate text-[10px] font-semibold text-indigo-700"
+                      >
+                        Project Review
+                      </p>
+
+                      <p class="truncate text-[9px] text-indigo-600">
+                        13:30 - 14:30
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- THURSDAY -->
+                  <div class="relative border-l border-slate-100">
+                    <div
+                      class="absolute inset-x-0 top-12 h-[432px] bg-emerald-50/30"
+                    ></div>
+
+                    <div
+                      class="absolute left-0.5 right-0.5 top-12 h-[432px] rounded-lg bg-emerald-50 ring-1 ring-inset ring-emerald-100"
+                    >
+                      <div class="p-1.5">
+                        <span
+                          class="block truncate text-[10px] font-semibold text-emerald-700"
+                        >
+                          Work Shift
+                        </span>
+
+                        <span
+                          class="mt-0.5 block truncate text-[9px] text-emerald-600"
+                        >
+                          08:00 - 17:00
+                        </span>
+                      </div>
+                    </div>
+
+                    <div
+                      class="absolute left-1 right-1 top-[264px] h-12 rounded-md bg-amber-100 px-1.5 py-1"
+                    >
+                      <p
+                        class="truncate text-[10px] font-semibold text-amber-700"
+                      >
+                        Lunch Break
+                      </p>
+
+                      <p class="truncate text-[9px] text-amber-600">
+                        12:00 - 13:00
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- FRIDAY -->
+                  <div class="relative border-l border-slate-100">
+                    <div
+                      class="absolute inset-x-0 top-12 h-[432px] bg-emerald-50/30"
+                    ></div>
+
+                    <div
+                      class="absolute left-0.5 right-0.5 top-12 h-[432px] rounded-lg bg-emerald-50 ring-1 ring-inset ring-emerald-100"
+                    >
+                      <div class="p-1.5">
+                        <span
+                          class="block truncate text-[10px] font-semibold text-emerald-700"
+                        >
+                          Work Shift
+                        </span>
+
+                        <span
+                          class="mt-0.5 block truncate text-[9px] text-emerald-600"
+                        >
+                          08:00 - 17:00
+                        </span>
+                      </div>
+                    </div>
+
+                    <div
+                      class="absolute left-1 right-1 top-24 h-24 rounded-md bg-violet-100 px-1.5 py-1"
+                    >
+                      <p
+                        class="truncate text-[10px] font-semibold text-violet-700"
+                      >
+                        Communication
+                      </p>
+
+                      <p class="truncate text-[9px] text-violet-600">
+                        09:00 - 11:00
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- SATURDAY -->
+                  <div
+                    class="relative border-l border-slate-100 bg-slate-50/50"
+                  >
+                    <div class="flex h-[624px] items-center justify-center">
+                      <span
+                        class="rounded-full bg-slate-100 px-2 py-1 text-[9px] font-medium text-slate-400"
+                      >
+                        Day Off
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- SUNDAY -->
+                  <div
+                    class="relative border-l border-slate-100 bg-slate-50/50"
+                  >
+                    <div class="flex h-[624px] items-center justify-center">
+                      <span
+                        class="rounded-full bg-slate-100 px-2 py-1 text-[9px] font-medium text-slate-400"
+                      >
+                        Day Off
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Legend -->
+              <div
+                class="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-slate-100 px-5 py-3"
+              >
                 <div
-                  class="mt-6 grid grid-cols-7 gap-2 text-center text-sm font-semibold text-slate-500"
+                  class="flex items-center gap-1.5 text-[10px] text-slate-500"
                 >
-                  <div>Sun</div>
-                  <div>Mon</div>
-                  <div>Tue</div>
-                  <div>Wed</div>
-                  <div>Thu</div>
-                  <div>Fri</div>
-                  <div>Sat</div>
+                  <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                  Work Shift
                 </div>
 
-                <!-- Calendar -->
                 <div
-                  id="attendanceCalendar"
-                  class="mt-3 grid grid-cols-7 gap-2"
+                  class="flex items-center gap-1.5 text-[10px] text-slate-500"
                 >
-                  <!-- Contoh -->
-                  <div class="rounded-xl p-3 text-center text-slate-400">
-                    29
-                  </div>
-                  <div class="rounded-xl p-3 text-center text-slate-400">
-                    30
-                  </div>
-
-                  <div
-                    class="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-center"
-                  >
-                    <p class="text-xs text-slate-500">1</p>
-                    <span
-                      class="mt-1 inline-block h-2 w-2 rounded-full bg-emerald-500"
-                    ></span>
-                  </div>
-
-                  <div
-                    class="rounded-xl border border-amber-200 bg-amber-50 p-3 text-center"
-                  >
-                    <p class="text-xs text-slate-500">2</p>
-                    <span
-                      class="mt-1 inline-block h-2 w-2 rounded-full bg-amber-500"
-                    ></span>
-                  </div>
-
-                  <div
-                    class="rounded-xl border border-red-200 bg-red-50 p-3 text-center"
-                  >
-                    <p class="text-xs text-slate-500">3</p>
-                    <span
-                      class="mt-1 inline-block h-2 w-2 rounded-full bg-red-500"
-                    ></span>
-                  </div>
-
-                  <!-- Sisanya di-generate JS -->
+                  <span class="h-2 w-2 rounded-full bg-indigo-500"></span>
+                  Meeting
                 </div>
 
-                <!-- Legend -->
-                <div class="mt-6 flex flex-wrap gap-4 text-sm">
-                  <div class="flex items-center gap-2">
-                    <span class="h-3 w-3 rounded-full bg-emerald-500"></span>
-                    Present
+                <div
+                  class="flex items-center gap-1.5 text-[10px] text-slate-500"
+                >
+                  <span class="h-2 w-2 rounded-full bg-amber-500"></span>
+                  Break
+                </div>
+
+                <div
+                  class="flex items-center gap-1.5 text-[10px] text-slate-500"
+                >
+                  <span class="h-2 w-2 rounded-full bg-violet-500"></span>
+                  Training
+                </div>
+
+                <div
+                  class="flex items-center gap-1.5 text-[10px] text-slate-500"
+                >
+                  <span class="h-2 w-2 rounded-full bg-slate-300"></span>
+                  Day Off
+                </div>
+              </div>
+            </div>
+
+            <!-- All Schedule -->
+            <div class="rounded-3xl bg-white shadow-sm">
+              <!-- Header -->
+              <div
+                class="flex flex-col gap-4 border-b border-slate-100 p-6 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div>
+                  <h2 class="text-lg font-semibold text-slate-800">
+                    All Schedule
+                  </h2>
+                  <p class="mt-1 text-sm text-slate-500">
+                    View and manage all upcoming and completed schedules.
+                  </p>
+                </div>
+
+                <!-- Filters -->
+                <div class="flex flex-wrap items-center gap-3">
+                  <!-- Type Filter -->
+                  <div>
+                    <label for="scheduleType" class="sr-only"
+                      >Filter Type</label
+                    >
+                    <select
+                      id="scheduleType"
+                      class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                    >
+                      <option value="all">All Type</option>
+                      <option value="meeting">Meeting</option>
+                      <option value="break">Break</option>
+                      <option value="work-shift">Work Shift</option>
+                      <option value="training">Training</option>
+                    </select>
                   </div>
 
-                  <div class="flex items-center gap-2">
-                    <span class="h-3 w-3 rounded-full bg-amber-500"></span>
-                    Late
+                  <!-- Status Filter -->
+                  <div>
+                    <label for="scheduleStatus" class="sr-only"
+                      >Filter Status</label
+                    >
+                    <select
+                      id="scheduleStatus"
+                      class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10"
+                    >
+                      <option value="all">All Status</option>
+                      <option value="scheduled">Scheduled</option>
+                      <option value="carried-out">Carried Out</option>
+                    </select>
                   </div>
+                </div>
+              </div>
 
-                  <div class="flex items-center gap-2">
-                    <span class="h-3 w-3 rounded-full bg-red-500"></span>
-                    Absent
-                  </div>
+              <!-- Table -->
+              <div class="overflow-x-auto">
+                <table class="min-w-full">
+                  <thead class="border-b border-slate-200 bg-slate-50/70">
+                    <tr class="text-left">
+                      <th
+                        class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500"
+                      >
+                        Date
+                      </th>
+
+                      <th
+                        class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500"
+                      >
+                        Type
+                      </th>
+
+                      <th
+                        class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500"
+                      >
+                        Title
+                      </th>
+
+                      <th
+                        class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500"
+                      >
+                        Time
+                      </th>
+
+                      <th
+                        class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500"
+                      >
+                        Duration
+                      </th>
+
+                      <th
+                        class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500"
+                      >
+                        Location
+                      </th>
+
+                      <th
+                        class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-slate-500"
+                      >
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody
+                    id="scheduleTableBody"
+                    class="divide-y divide-slate-100"
+                  >
+                    <!-- 1 -->
+                    <tr
+                      class="schedule-row hover:bg-slate-50"
+                      data-type="work-shift"
+                      data-status="carried-out"
+                    >
+                      <td class="whitespace-nowrap px-6 py-4">
+                        <p class="font-medium text-slate-800">Monday</p>
+                        <p class="text-xs text-slate-500">20 Jul 2026</p>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700"
+                        >
+                          Work Shift
+                        </span>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <p class="font-medium text-slate-700">
+                          Regular Work Shift
+                        </p>
+                        <p class="text-xs text-slate-500">
+                          Standard working hours
+                        </p>
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        08:00 - 17:00
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        9h 00m
+                      </td>
+
+                      <td class="px-6 py-4 text-sm text-slate-600">
+                        Head Office
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+                        >
+                          Carried Out
+                        </span>
+                      </td>
+                    </tr>
+
+                    <!-- 2 -->
+                    <tr
+                      class="schedule-row hover:bg-slate-50"
+                      data-type="meeting"
+                      data-status="carried-out"
+                    >
+                      <td class="whitespace-nowrap px-6 py-4">
+                        <p class="font-medium text-slate-800">Monday</p>
+                        <p class="text-xs text-slate-500">20 Jul 2026</p>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-700"
+                        >
+                          Meeting
+                        </span>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <p class="font-medium text-slate-700">
+                          Weekly Team Meeting
+                        </p>
+                        <p class="text-xs text-slate-500">
+                          Weekly progress discussion
+                        </p>
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        09:00 - 10:00
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        1h 00m
+                      </td>
+
+                      <td class="px-6 py-4 text-sm text-slate-600">
+                        Meeting Room A
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+                        >
+                          Carried Out
+                        </span>
+                      </td>
+                    </tr>
+
+                    <!-- 3 -->
+                    <tr
+                      class="schedule-row hover:bg-slate-50"
+                      data-type="break"
+                      data-status="carried-out"
+                    >
+                      <td class="whitespace-nowrap px-6 py-4">
+                        <p class="font-medium text-slate-800">Monday</p>
+                        <p class="text-xs text-slate-500">20 Jul 2026</p>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700"
+                        >
+                          Break
+                        </span>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <p class="font-medium text-slate-700">Lunch Break</p>
+                        <p class="text-xs text-slate-500">
+                          Regular lunch break
+                        </p>
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        12:00 - 13:00
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        1h 00m
+                      </td>
+
+                      <td class="px-6 py-4 text-sm text-slate-600">
+                        Break Area
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+                        >
+                          Carried Out
+                        </span>
+                      </td>
+                    </tr>
+
+                    <!-- 4 -->
+                    <tr
+                      class="schedule-row hover:bg-slate-50"
+                      data-type="training"
+                      data-status="carried-out"
+                    >
+                      <td class="whitespace-nowrap px-6 py-4">
+                        <p class="font-medium text-slate-800">Tuesday</p>
+                        <p class="text-xs text-slate-500">21 Jul 2026</p>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-violet-100 px-3 py-1 text-xs font-medium text-violet-700"
+                        >
+                          Training
+                        </span>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <p class="font-medium text-slate-700">
+                          Workplace Safety Training
+                        </p>
+                        <p class="text-xs text-slate-500">
+                          Safety and emergency procedures
+                        </p>
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        10:00 - 12:00
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        2h 00m
+                      </td>
+
+                      <td class="px-6 py-4 text-sm text-slate-600">
+                        Training Room
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600"
+                        >
+                          Carried Out
+                        </span>
+                      </td>
+                    </tr>
+
+                    <!-- 5 -->
+                    <tr
+                      class="schedule-row hover:bg-slate-50"
+                      data-type="meeting"
+                      data-status="scheduled"
+                    >
+                      <td class="whitespace-nowrap px-6 py-4">
+                        <p class="font-medium text-slate-800">Wednesday</p>
+                        <p class="text-xs text-slate-500">22 Jul 2026</p>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-indigo-100 px-3 py-1 text-xs font-medium text-indigo-700"
+                        >
+                          Meeting
+                        </span>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <p class="font-medium text-slate-700">Project Review</p>
+                        <p class="text-xs text-slate-500">
+                          Project progress and evaluation
+                        </p>
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        13:30 - 14:30
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        1h 00m
+                      </td>
+
+                      <td class="px-6 py-4 text-sm text-slate-600">
+                        Meeting Room B
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700"
+                        >
+                          Scheduled
+                        </span>
+                      </td>
+                    </tr>
+
+                    <!-- 6 -->
+                    <tr
+                      class="schedule-row hover:bg-slate-50"
+                      data-type="work-shift"
+                      data-status="scheduled"
+                    >
+                      <td class="whitespace-nowrap px-6 py-4">
+                        <p class="font-medium text-slate-800">Thursday</p>
+                        <p class="text-xs text-slate-500">23 Jul 2026</p>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-medium text-emerald-700"
+                        >
+                          Work Shift
+                        </span>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <p class="font-medium text-slate-700">
+                          Regular Work Shift
+                        </p>
+                        <p class="text-xs text-slate-500">
+                          Standard working hours
+                        </p>
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        08:00 - 17:00
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        9h 00m
+                      </td>
+
+                      <td class="px-6 py-4 text-sm text-slate-600">
+                        Head Office
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700"
+                        >
+                          Scheduled
+                        </span>
+                      </td>
+                    </tr>
+
+                    <!-- 7 -->
+                    <tr
+                      class="schedule-row hover:bg-slate-50"
+                      data-type="break"
+                      data-status="scheduled"
+                    >
+                      <td class="whitespace-nowrap px-6 py-4">
+                        <p class="font-medium text-slate-800">Thursday</p>
+                        <p class="text-xs text-slate-500">23 Jul 2026</p>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700"
+                        >
+                          Break
+                        </span>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <p class="font-medium text-slate-700">Lunch Break</p>
+                        <p class="text-xs text-slate-500">
+                          Regular lunch break
+                        </p>
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        12:00 - 13:00
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        1h 00m
+                      </td>
+
+                      <td class="px-6 py-4 text-sm text-slate-600">
+                        Break Area
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700"
+                        >
+                          Scheduled
+                        </span>
+                      </td>
+                    </tr>
+
+                    <!-- 8 -->
+                    <tr
+                      class="schedule-row hover:bg-slate-50"
+                      data-type="training"
+                      data-status="scheduled"
+                    >
+                      <td class="whitespace-nowrap px-6 py-4">
+                        <p class="font-medium text-slate-800">Friday</p>
+                        <p class="text-xs text-slate-500">24 Jul 2026</p>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-violet-100 px-3 py-1 text-xs font-medium text-violet-700"
+                        >
+                          Training
+                        </span>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <p class="font-medium text-slate-700">
+                          Communication Skills
+                        </p>
+                        <p class="text-xs text-slate-500">
+                          Effective workplace communication
+                        </p>
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        09:00 - 11:00
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        2h 00m
+                      </td>
+
+                      <td class="px-6 py-4 text-sm text-slate-600">
+                        Training Room
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700"
+                        >
+                          Scheduled
+                        </span>
+                      </td>
+                    </tr>
+
+                    <!-- 9 -->
+                    <tr
+                      class="schedule-row hover:bg-slate-50"
+                      data-type="training"
+                      data-status="scheduled"
+                    >
+                      <td class="whitespace-nowrap px-6 py-4">
+                        <p class="font-medium text-slate-800">Friday</p>
+                        <p class="text-xs text-slate-500">24 Jul 2026</p>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-violet-100 px-3 py-1 text-xs font-medium text-violet-700"
+                        >
+                          Training
+                        </span>
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <p class="font-medium text-slate-700">
+                          Communication Skills
+                        </p>
+                        <p class="text-xs text-slate-500">
+                          Effective workplace communication
+                        </p>
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        09:00 - 11:00
+                      </td>
+
+                      <td
+                        class="whitespace-nowrap px-6 py-4 text-sm text-slate-600"
+                      >
+                        2h 00m
+                      </td>
+
+                      <td class="px-6 py-4 text-sm text-slate-600">
+                        Training Room
+                      </td>
+
+                      <td class="px-6 py-4">
+                        <span
+                          class="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700"
+                        >
+                          Scheduled
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Empty State -->
+              <div id="scheduleEmpty" class="hidden px-6 py-12 text-center">
+                <p class="font-medium text-slate-700">No schedules found</p>
+                <p class="mt-1 text-sm text-slate-500">
+                  Try changing the selected filters.
+                </p>
+              </div>
+
+              <!-- Pagination -->
+              <div
+                class="flex items-center justify-between border-t border-slate-100 px-6 py-4"
+              >
+                <p class="text-sm text-slate-500">
+                  Showing
+                  <span id="scheduleStart" class="font-medium text-slate-700"
+                    >1</span
+                  >
+                  -
+                  <span id="scheduleEnd" class="font-medium text-slate-700"
+                    >8</span
+                  >
+                  of
+                  <span id="scheduleTotal" class="font-medium text-slate-700"
+                    >16</span
+                  >
+                  schedules
+                </p>
+
+                <div class="flex items-center gap-2">
+                  <!-- Previous -->
+                  <button
+                    id="schedulePrev"
+                    type="button"
+                    class="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                    aria-label="Previous page"
+                    disabled
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                  </button>
+
+                  <!-- Page -->
+                  <span
+                    id="schedulePage"
+                    class="flex h-9 min-w-9 items-center justify-center rounded-xl bg-indigo-50 px-3 text-sm font-medium text-indigo-600"
+                  >
+                    1
+                  </span>
+
+                  <!-- Next -->
+                  <button
+                    id="scheduleNext"
+                    type="button"
+                    class="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                    aria-label="Next page"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
                 </div>
               </div>
             </div>
