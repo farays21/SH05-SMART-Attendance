@@ -1,4 +1,13 @@
 // ==========================================
+// 0. GLOBAL STATE (DEKLARASI DI AWAL)
+// ==========================================
+let checkedIn = false;
+let checkedOut = false;
+let isLocationActive = false;
+let pendingAction = null; // 'checkin' atau 'checkout'
+let stream = null;
+
+// ==========================================
 // 1. NAVIGATION & SIDEBAR MANAGEMENT
 // ==========================================
 const sidebar = document.getElementById("sidebar");
@@ -33,11 +42,10 @@ closeSidebar?.addEventListener("click", hideSidebar);
 sidebarOverlay?.addEventListener("click", hideSidebar);
 window.addEventListener("resize", handleResize);
 
-// Initialization
 handleResize();
 
 // ==========================================
-// 2. REAL-TIME CLOCK SYSTEM
+// 2. REAL-TIME CLOCK SYSTEM & TIMELINE AUTO-UPDATE
 // ==========================================
 const headerTime = document.getElementById("headerTime");
 const headerDate = document.getElementById("headerDate");
@@ -67,6 +75,27 @@ function updateClock() {
   if (heroTime) heroTime.textContent = timeText;
   if (heroDay) heroDay.textContent = dayText;
   if (heroDate) heroDate.textContent = dateText;
+
+  // Auto-update timeline break status jika sudah check in
+  if (checkedIn && !checkedOut) {
+    const currentHour = now.getHours();
+
+    // Break Start Trigger (12:00)
+    if (currentHour >= 12) {
+      const dotBreakStart = document.getElementById("dot-breakstart");
+      if (dotBreakStart && dotBreakStart.classList.contains("bg-slate-300")) {
+        dotBreakStart.classList.replace("bg-slate-300", "bg-amber-500");
+      }
+    }
+
+    // Break End Trigger (13:00)
+    if (currentHour >= 13) {
+      const dotBreakEnd = document.getElementById("dot-breakend");
+      if (dotBreakEnd && dotBreakEnd.classList.contains("bg-slate-300")) {
+        dotBreakEnd.classList.replace("bg-slate-300", "bg-blue-500");
+      }
+    }
+  }
 }
 
 updateClock();
@@ -83,7 +112,6 @@ const attendanceMap = document.getElementById("attendanceMap");
 
 async function getAddress(latitude, longitude) {
   try {
-    // Menggunakan API BigDataCloud (Bisa diakses langsung dari browser tanpa kendala User-Agent)
     const response = await fetch(
       `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`,
     );
@@ -103,45 +131,33 @@ async function getAddress(latitude, longitude) {
     }
   } catch (error) {
     console.error("Geocoding Error:", error);
-    if (locationAddress) {
+    if (locationAddress)
       locationAddress.textContent = "Failed to load address details.";
-    }
   }
 }
 
 function setLocation(position) {
   const { latitude, longitude } = position.coords;
+  isLocationActive = true; // Sensus status lokasi aktif
 
-  if (locationText) {
-    locationText.textContent = "Location detected";
-  }
-
-  if (coordinates) {
+  if (locationText) locationText.textContent = "Location detected";
+  if (coordinates)
     coordinates.innerHTML = `Latitude: ${latitude.toFixed(6)}<br>Longitude: ${longitude.toFixed(6)}`;
-  }
-
-  if (attendanceMap) {
+  if (attendanceMap)
     attendanceMap.src = `https://maps.google.com/maps?q=${latitude},${longitude}&z=16&output=embed`;
-  }
 
   getAddress(latitude, longitude);
 }
 
 function showLocationError(error) {
   console.warn("Geolocation Warning:", error?.message || error);
+  isLocationActive = false;
 
-  if (locationText) {
-    locationText.textContent = "Location not available";
-  }
-
-  if (locationAddress) {
+  if (locationText) locationText.textContent = "Location not available";
+  if (locationAddress)
     locationAddress.textContent =
       "Please enable location permissions in your browser.";
-  }
-
-  if (coordinates) {
-    coordinates.textContent = "Latitude: - | Longitude: -";
-  }
+  if (coordinates) coordinates.textContent = "Latitude: - | Longitude: -";
 }
 
 function requestLocation() {
@@ -149,15 +165,12 @@ function requestLocation() {
     showLocationError("Geolocation is not supported by this browser.");
     return;
   }
-
-  if (locationText) {
-    locationText.textContent = "Searching for location...";
-  }
+  if (locationText) locationText.textContent = "Searching for location...";
 
   navigator.geolocation.getCurrentPosition(setLocation, showLocationError, {
     enableHighAccuracy: true,
     timeout: 10000,
-    maximumAge: 0, // Memaksa browser mengambil lokasi terbaru
+    maximumAge: 0,
   });
 }
 
@@ -170,7 +183,6 @@ requestLocation();
 const cameraPreview = document.getElementById("cameraPreview");
 const cameraOverlay = document.getElementById("cameraOverlay");
 const toggleCameraBtn = document.getElementById("toggleCameraBtn");
-let stream = null;
 
 async function startCamera() {
   if (!navigator.mediaDevices?.getUserMedia) {
@@ -183,12 +195,10 @@ async function startCamera() {
       video: { facingMode: "user" },
       audio: false,
     });
-
     if (cameraPreview) {
       cameraPreview.srcObject = stream;
       cameraPreview.classList.remove("hidden");
     }
-
     cameraOverlay?.classList.add("hidden");
     if (toggleCameraBtn) toggleCameraBtn.textContent = "Turn Off Camera";
   } catch (error) {
@@ -202,12 +212,10 @@ function stopCamera() {
     stream.getTracks().forEach((track) => track.stop());
     stream = null;
   }
-
   if (cameraPreview) {
     cameraPreview.srcObject = null;
     cameraPreview.classList.add("hidden");
   }
-
   cameraOverlay?.classList.remove("hidden");
   if (toggleCameraBtn) toggleCameraBtn.textContent = "Turn On Camera";
 }
@@ -217,63 +225,147 @@ toggleCameraBtn?.addEventListener("click", () => {
 });
 
 // ==========================================
-// 5. ATTENDANCE ACTIONS (CHECK-IN / CHECK-OUT)
+// 5. ATTENDANCE ACTIONS & MODAL FLOW
 // ==========================================
 const checkInBtn = document.getElementById("checkInBtn");
 const checkOutBtn = document.getElementById("checkOutBtn");
 const checkInStatus = document.getElementById("checkInStatus");
 const checkOutStatus = document.getElementById("checkOutStatus");
 
-let checkedIn = false;
-let checkedOut = false;
+// Modal Elements
+const attendanceModal = document.getElementById("attendanceModal");
+const cancelModalBtn = document.getElementById("cancelModalBtn");
+const confirmModalBtn = document.getElementById("confirmModalBtn");
+const snapshotCanvas = document.getElementById("snapshotCanvas");
+const snapshotPreview = document.getElementById("snapshotPreview");
+
+function capturePhoto() {
+  if (!stream || !cameraPreview || !snapshotCanvas || !snapshotPreview) return;
+  snapshotCanvas.width = cameraPreview.videoWidth || 640;
+  snapshotCanvas.height = cameraPreview.videoHeight || 480;
+  const ctx = snapshotCanvas.getContext("2d");
+  ctx.drawImage(
+    cameraPreview,
+    0,
+    0,
+    snapshotCanvas.width,
+    snapshotCanvas.height,
+  );
+  snapshotPreview.src = snapshotCanvas.toDataURL("image/png");
+}
+
+function initAttendanceFlow(action) {
+  // Kondisi 1: Validasi Gagal (Kamera belum aktif ATAU lokasi belum terdeteksi)
+  if (!stream || !isLocationActive) {
+    alert("Camera or location not yet active.");
+    return;
+  }
+
+  // Kondisi 2: Validasi Berhasil
+  pendingAction = action;
+  capturePhoto();
+
+  // Populate data modal
+  const nowTime = new Date().toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
+  const modalTimeText = document.getElementById("modalTimeText");
+  const modalLocationText = document.getElementById("modalLocationText");
+  const modalTitle = document.getElementById("modalTitle");
+
+  if (modalTimeText) modalTimeText.textContent = nowTime;
+  if (modalLocationText)
+    modalLocationText.textContent =
+      locationAddress?.textContent || "Location details unknown";
+  if (modalTitle)
+    modalTitle.textContent =
+      action === "checkin" ? "Confirm Check In" : "Confirm Check Out";
+
+  // Tampilkan Modal Konfirmasi
+  attendanceModal?.classList.remove("hidden");
+}
 
 checkInBtn?.addEventListener("click", () => {
-  if (checkedIn) return;
-
-  checkedIn = true;
-  checkedOut = false;
-
-  checkInBtn.disabled = true;
-  checkInBtn.classList.remove("bg-emerald-600", "hover:bg-emerald-700");
-  checkInBtn.classList.add("bg-slate-300", "cursor-not-allowed");
-
-  if (checkInStatus) {
-    checkInStatus.textContent = "Status: Checked In";
-    checkInStatus.className = "text-center text-xs text-emerald-600";
-  }
-
-  if (checkOutBtn) {
-    checkOutBtn.disabled = false;
-    checkOutBtn.classList.remove("bg-slate-300", "cursor-not-allowed");
-    checkOutBtn.classList.add("bg-rose-600", "hover:bg-rose-700");
-  }
-
-  if (checkOutStatus) {
-    checkOutStatus.textContent = "Status: Ready";
-    checkOutStatus.className = "text-center text-xs text-slate-500";
-  }
+  if (!checkedIn) initAttendanceFlow("checkin");
 });
 
 checkOutBtn?.addEventListener("click", () => {
-  if (!checkedIn || checkedOut) return;
+  if (checkedIn && !checkedOut) initAttendanceFlow("checkout");
+});
 
-  checkedOut = true;
+cancelModalBtn?.addEventListener("click", () => {
+  attendanceModal?.classList.add("hidden");
+  pendingAction = null;
+});
 
-  checkOutBtn.disabled = true;
-  checkOutBtn.classList.remove("bg-rose-600", "hover:bg-rose-700");
-  checkOutBtn.classList.add("bg-slate-300", "cursor-not-allowed");
+confirmModalBtn?.addEventListener("click", () => {
+  attendanceModal?.classList.add("hidden");
+  const nowTime = new Date().toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 
-  if (checkOutStatus) {
-    checkOutStatus.textContent = "Status: Completed";
-    checkOutStatus.className = "text-center text-xs text-emerald-600";
+  if (pendingAction === "checkin") {
+    checkedIn = true;
+    checkedOut = false;
+
+    // Update Status Tombol Check In
+    checkInBtn.disabled = true;
+    checkInBtn.classList.remove("bg-emerald-600", "hover:bg-emerald-700");
+    checkInBtn.classList.add("bg-slate-300", "cursor-not-allowed");
+    if (checkInStatus) {
+      checkInStatus.textContent = "Status: Checked In";
+      checkInStatus.className = "text-center text-xs text-emerald-600";
+    }
+
+    // Aktifkan Tombol Check Out
+    checkOutBtn.disabled = false;
+    checkOutBtn.classList.remove("bg-slate-300", "cursor-not-allowed");
+    checkOutBtn.classList.add("bg-rose-600", "hover:bg-rose-700");
+    if (checkOutStatus) {
+      checkOutStatus.textContent = "Status: Ready";
+      checkOutStatus.className = "text-center text-xs text-slate-500";
+    }
+
+    // Update Timeline Check In
+    const dotCheckin = document.getElementById("dot-checkin");
+    const timeCheckin = document.getElementById("time-checkin");
+    if (dotCheckin)
+      dotCheckin.classList.replace("bg-slate-300", "bg-emerald-500");
+    if (timeCheckin) timeCheckin.textContent = nowTime;
+  } else if (pendingAction === "checkout") {
+    checkedOut = true;
+
+    // Update Status Tombol Check Out
+    checkOutBtn.disabled = true;
+    checkOutBtn.classList.remove("bg-rose-600", "hover:bg-rose-700");
+    checkOutBtn.classList.add("bg-slate-300", "cursor-not-allowed");
+    if (checkOutStatus) {
+      checkOutStatus.textContent = "Status: Completed";
+      checkOutStatus.className = "text-center text-xs text-emerald-600";
+    }
+
+    // Update Timeline Check Out
+    const dotCheckout = document.getElementById("dot-checkout");
+    const timeCheckout = document.getElementById("time-checkout");
+    if (dotCheckout)
+      dotCheckout.classList.replace("bg-slate-300", "bg-rose-500");
+    if (timeCheckout) timeCheckout.textContent = nowTime;
   }
+
+  // Pemicu Toast Sukses
+  showToast();
+  pendingAction = null;
 });
 
 // ==========================================
 // 6. TOAST NOTIFICATION SYSTEM
 // ==========================================
 const toast = document.getElementById("toast");
-const triggerBtn = document.getElementById("triggerBtn");
 const closeToastBtn = document.getElementById("closeToastBtn");
 let toastTimer;
 
@@ -303,5 +395,4 @@ function hideToast() {
   }, 300);
 }
 
-triggerBtn?.addEventListener("click", showToast);
 closeToastBtn?.addEventListener("click", hideToast);

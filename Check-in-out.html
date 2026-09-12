@@ -561,77 +561,66 @@
                   </div>
 
                   <div class="space-y-6">
+                    <!-- Check In -->
                     <div class="flex gap-4">
                       <div class="flex flex-col items-center">
                         <span
-                          class="h-3 w-3 rounded-full bg-emerald-500"
+                          id="dot-checkin"
+                          class="h-3 w-3 rounded-full bg-slate-300 transition-colors duration-500"
                         ></span>
                         <span class="mt-1 h-full w-px bg-slate-200"></span>
                       </div>
-
                       <div>
                         <p class="font-medium text-slate-800">Check In</p>
-                        <p class="text-sm text-slate-500">08:02 AM</p>
-                        <p class="text-sm text-slate-400">
-                          Successfully checked in.
+                        <p id="time-checkin" class="text-sm text-slate-500">
+                          Pending
                         </p>
                       </div>
                     </div>
 
+                    <!-- Break Start -->
                     <div class="flex gap-4">
                       <div class="flex flex-col items-center">
-                        <span class="h-3 w-3 rounded-full bg-blue-500"></span>
+                        <span
+                          id="dot-breakstart"
+                          class="h-3 w-3 rounded-full bg-slate-300 transition-colors duration-500"
+                        ></span>
                         <span class="mt-1 h-full w-px bg-slate-200"></span>
                       </div>
-
                       <div>
-                        <p class="font-medium text-slate-800">
-                          Work Shift Started
-                        </p>
-                        <p class="text-sm text-slate-500">
-                          08:00 AM - 04:00 PM
-                        </p>
+                        <p class="font-medium text-slate-800">Break Start</p>
+                        <p class="text-sm text-slate-500">12:00</p>
                       </div>
                     </div>
 
+                    <!-- Break End -->
                     <div class="flex gap-4">
                       <div class="flex flex-col items-center">
-                        <span class="h-3 w-3 rounded-full bg-purple-500"></span>
+                        <span
+                          id="dot-breakend"
+                          class="h-3 w-3 rounded-full bg-slate-300 transition-colors duration-500"
+                        ></span>
                         <span class="mt-1 h-full w-px bg-slate-200"></span>
                       </div>
-
                       <div>
-                        <p class="font-medium text-slate-800">Team Meeting</p>
-                        <p class="text-sm text-slate-500">
-                          10:00 AM - 11:00 AM
-                        </p>
+                        <p class="font-medium text-slate-800">Break End</p>
+                        <p class="text-sm text-slate-500">13:00</p>
                       </div>
                     </div>
 
+                    <!-- Check Out -->
                     <div class="flex gap-4">
                       <div class="flex flex-col items-center">
-                        <span class="h-3 w-3 rounded-full bg-amber-500"></span>
-                        <span class="mt-1 h-full w-px bg-slate-200"></span>
+                        <span
+                          id="dot-checkout"
+                          class="h-3 w-3 rounded-full bg-slate-300 transition-colors duration-500"
+                        ></span>
                       </div>
-
-                      <div>
-                        <p class="font-medium text-slate-800">
-                          Training Session
-                        </p>
-                        <p class="text-sm text-slate-500">
-                          01:00 PM - 03:00 PM
-                        </p>
-                      </div>
-                    </div>
-
-                    <div class="flex gap-4">
-                      <div class="flex flex-col items-center">
-                        <span class="h-3 w-3 rounded-full bg-rose-500"></span>
-                      </div>
-
                       <div>
                         <p class="font-medium text-slate-800">Check Out</p>
-                        <p class="text-sm text-slate-500">Pending</p>
+                        <p id="time-checkout" class="text-sm text-slate-500">
+                          Pending
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -700,9 +689,9 @@
 
                 <!-- Attendance Buttons -->
                 <div class="mt-6 space-y-3">
+                  <!-- Hapus onclick="showToast()" dari tombol Check In -->
                   <button
                     id="checkInBtn"
-                    onclick="showToast()"
                     class="w-full rounded-2xl bg-emerald-600 py-4 font-semibold text-white hover:bg-emerald-700"
                   >
                     Check In
@@ -715,9 +704,9 @@
                     Status: Not Checked In
                   </p>
 
+                  <!-- Hapus onclick="showToast()" dari tombol Check Out -->
                   <button
                     id="checkOutBtn"
-                    onclick="showToast()"
                     disabled
                     class="w-full cursor-not-allowed rounded-2xl bg-slate-300 py-4 font-semibold text-white"
                   >
@@ -731,7 +720,7 @@
                     Status: Not Available
                   </p>
 
-                  <!-- Container Toast Notification (Atas Tengah) -->
+                  <!-- Container Toast Notification (BENTUK TOAST TETAP ADAPUN/DIBIARKAN DI SINI) -->
                   <div
                     class="fixed top-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
                   >
@@ -1092,6 +1081,90 @@
             </div>
           </section>
         </main>
+      </div>
+    </div>
+
+    <!-- Confirmation Modal Overlay -->
+    <div
+      id="attendanceModal"
+      class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity"
+    >
+      <div
+        class="flex w-full max-w-3xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl md:flex-row"
+      >
+        <!-- Kolom Kiri: Preview Kamera -->
+        <div
+          class="relative flex w-full flex-col items-center justify-center bg-slate-100 p-4 md:w-1/2 md:border-r border-slate-200"
+        >
+          <canvas id="snapshotCanvas" class="hidden"></canvas>
+          <img
+            id="snapshotPreview"
+            alt="Snapshot"
+            class="h-64 w-full rounded-2xl object-cover shadow-sm md:h-full border border-slate-200"
+          />
+        </div>
+
+        <!-- Kolom Kanan: Detail & Aksi -->
+        <div class="flex w-full flex-col justify-between p-6 md:w-1/2">
+          <div>
+            <h3 id="modalTitle" class="mb-5 text-xl font-bold text-slate-800">
+              Confirm Attendance
+            </h3>
+            <div class="space-y-4">
+              <div>
+                <p
+                  class="text-xs font-semibold uppercase tracking-wider text-slate-500"
+                >
+                  Current Time
+                </p>
+                <p
+                  id="modalTimeText"
+                  class="text-lg font-medium text-slate-800"
+                >
+                  --:--
+                </p>
+              </div>
+              <div>
+                <p
+                  class="text-xs font-semibold uppercase tracking-wider text-slate-500"
+                >
+                  Location
+                </p>
+                <p
+                  id="modalLocationText"
+                  class="text-sm font-medium text-slate-800 leading-snug"
+                >
+                  Detecting...
+                </p>
+              </div>
+              <div>
+                <p
+                  class="text-xs font-semibold uppercase tracking-wider text-slate-500"
+                >
+                  User Profile
+                </p>
+                <p class="text-sm font-medium text-slate-800">Farrel Zaidan</p>
+                <p class="text-sm text-slate-500">Frontend Developer</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="mt-8 flex gap-3">
+            <button
+              id="cancelModalBtn"
+              class="flex-1 rounded-xl border border-slate-200 py-3 font-semibold text-slate-600 transition hover:bg-slate-50"
+            >
+              Cancel
+            </button>
+            <button
+              id="confirmModalBtn"
+              class="flex-1 rounded-xl bg-indigo-600 py-3 font-semibold text-white shadow-md transition hover:bg-indigo-700"
+            >
+              Confirm
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 

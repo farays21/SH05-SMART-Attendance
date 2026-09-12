@@ -84,19 +84,20 @@ function updateClock() {
 // Dummy attendance
 // nanti tinggal ganti dari API
 const attendanceData = {
-  "2026-07-01": "present",
-  "2026-07-02": "late",
-  "2026-07-03": "present",
-  "2026-07-04": "absent",
-  "2026-07-05": "present",
-  "2026-07-08": "late",
-  "2026-07-10": "present",
-  "2026-07-12": "present",
-  "2026-07-15": "present",
-  "2026-07-18": "absent",
-  "2026-07-20": "present",
-  "2026-07-24": "late",
-  "2026-08-28": "late",
+  "2026-08-01": "present",
+  "2026-08-02": "late",
+  "2026-08-03": "present",
+  "2026-08-04": "absent",
+  "2026-08-05": "present",
+  "2026-08-08": "late",
+  "2026-09-01": "present",
+  "2026-09-10": "present",
+  "2026-09-12": "present",
+  "2026-09-15": "present",
+  "2026-09-18": "absent",
+  "2026-09-20": "present",
+  "2026-09-24": "late",
+  "2026-10-28": "late",
 };
 
 const colors = {
@@ -293,3 +294,139 @@ function renderMonthlyTrend() {
 }
 
 renderMonthlyTrend();
+
+// ==========================================
+// LOGIKA FILTER PERIOD & DIAGRAM AKURAT
+// ==========================================
+
+const filterPeriodSelect = document.getElementById("filterPeriod");
+const totalPresentEl = document.getElementById("totalPresent");
+const totalLateEl = document.getElementById("totalLate");
+const totalAbsentEl = document.getElementById("totalAbsent");
+const attendanceRateEl = document.getElementById("attendanceRate");
+
+function updateDashboardByPeriod() {
+  if (!filterPeriodSelect) return;
+
+  const selectedPeriod = filterPeriodSelect.value;
+  const baseDate = new Date(currentDate);
+  let startDate, endDate;
+
+  // 1. Tentukan Rentang Tanggal
+  if (selectedPeriod === "This Week") {
+    const day = baseDate.getDay();
+    // Cari hari Senin (atau Minggu) minggu ini
+    const diffToMon = baseDate.getDate() - day + (day === 0 ? -6 : 1);
+    startDate = new Date(baseDate.setDate(diffToMon));
+    endDate = new Date(baseDate.setDate(diffToMon + 6));
+  } else if (selectedPeriod === "This Month") {
+    startDate = new Date(baseDate.getFullYear(), baseDate.getMonth(), 1);
+    endDate = new Date(baseDate.getFullYear(), baseDate.getMonth() + 1, 0);
+  } else if (selectedPeriod === "Last Month") {
+    startDate = new Date(baseDate.getFullYear(), baseDate.getMonth() - 1, 1);
+    endDate = new Date(baseDate.getFullYear(), baseDate.getMonth(), 0);
+  }
+
+  startDate.setHours(0, 0, 0, 0);
+  endDate.setHours(23, 59, 59, 999);
+
+  let present = 0,
+    late = 0,
+    absent = 0;
+
+  // Struktur data per minggu (Week 1 s/d Week 5) untuk chart
+  const weeklyData = {
+    present: [0, 0, 0, 0, 0],
+    late: [0, 0, 0, 0, 0],
+    absent: [0, 0, 0, 0, 0],
+  };
+
+  // Struktur data per hari (Senin - Minggu) untuk filter This Week
+  const dailyData = {
+    present: [0, 0, 0, 0, 0, 0, 0],
+    late: [0, 0, 0, 0, 0, 0, 0],
+    absent: [0, 0, 0, 0, 0, 0, 0],
+  };
+
+  // 2. Iterasi & Kelompokkan Data Berdasarkan Tanggal Asli
+  for (const [dateString, status] of Object.entries(attendanceData)) {
+    // Parsing manual YYYY-MM-DD agar aman timezone
+    const [y, m, d] = dateString.split("-").map(Number);
+    const recordDate = new Date(y, m - 1, d);
+
+    if (recordDate >= startDate && recordDate <= endDate) {
+      // Hitung total ringkasan
+      if (status === "present") present++;
+      if (status === "late") late++;
+      if (status === "absent") absent++;
+
+      if (selectedPeriod === "This Week") {
+        // Indeks hari: 0 = Senin, 6 = Minggu
+        let dayIdx = recordDate.getDay() - 1;
+        if (dayIdx === -1) dayIdx = 6;
+        if (dailyData[status]) dailyData[status][dayIdx]++;
+      } else {
+        // Hitung tepat tanggal tersebut masuk minggu ke berapa di bulan itu
+        const dayOfMonth = recordDate.getDate();
+        const weekIdx = Math.min(Math.floor((dayOfMonth - 1) / 7), 4); // Index 0 - 4 (Week 1 - 5)
+        if (weeklyData[status]) weeklyData[status][weekIdx]++;
+      }
+    }
+  }
+
+  // 3. Update Elemen Teks UI Stat
+  const totalDays = present + late + absent;
+  const rate = totalDays === 0 ? 0 : ((present + late) / totalDays) * 100;
+
+  if (totalPresentEl) totalPresentEl.textContent = present;
+  if (totalLateEl) totalLateEl.textContent = late;
+  if (totalAbsentEl) totalAbsentEl.textContent = absent;
+  if (attendanceRateEl) attendanceRateEl.textContent = rate.toFixed(1) + "%";
+
+  // 4. Update Diagram
+  updateChartAccurately(selectedPeriod, weeklyData, dailyData);
+}
+
+function updateChartAccurately(period, weeklyData, dailyData) {
+  if (!window.monthlyTrendChartInstance) return;
+  const chart = window.monthlyTrendChartInstance;
+
+  if (period === "This Week") {
+    chart.data.labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    chart.data.datasets[0].data = dailyData.present;
+    chart.data.datasets[1].data = dailyData.late;
+    chart.data.datasets[2].data = dailyData.absent;
+  } else {
+    chart.data.labels = ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"];
+    chart.data.datasets[0].data = weeklyData.present;
+    chart.data.datasets[1].data = weeklyData.late;
+    chart.data.datasets[2].data = weeklyData.absent;
+  }
+
+  chart.update();
+}
+
+// Event Listeners
+if (filterPeriodSelect) {
+  filterPeriodSelect.addEventListener("change", updateDashboardByPeriod);
+}
+
+// Update juga pas tombol navigasi bulan kalender diklik
+if (prevMonthBtn) {
+  const originalPrev = prevMonthBtn.onclick;
+  prevMonthBtn.onclick = () => {
+    if (originalPrev) originalPrev();
+    updateDashboardByPeriod();
+  };
+}
+
+if (nextMonthBtn) {
+  const originalNext = nextMonthBtn.onclick;
+  nextMonthBtn.onclick = () => {
+    if (originalNext) originalNext();
+    updateDashboardByPeriod();
+  };
+}
+
+// Load inisial
+updateDashboardByPeriod();
