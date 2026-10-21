@@ -1,4 +1,6 @@
-// Sidebar mobile
+// ==========================================
+// 1. SIDEBAR & NAVIGATION HANDLER
+// ==========================================
 const sidebar = document.getElementById("sidebar");
 const sidebarOverlay = document.getElementById("sidebarOverlay");
 const openSidebar = document.getElementById("openSidebar");
@@ -32,7 +34,7 @@ sidebarOverlay?.addEventListener("click", hideSidebar);
 window.addEventListener("resize", handleResize);
 handleResize();
 
-// Attendance UI elements
+// Realtime Header Clock
 const headerTime = document.getElementById("headerTime");
 const headerDate = document.getElementById("headerDate");
 
@@ -57,7 +59,294 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
-// Activity chart (canvas, no external library required)
+// ==========================================
+// 2. CENTRAL STATE & TERHUBUNG DATA
+// ==========================================
+const mockData = [
+  {
+    id: "1",
+    year: 2026,
+    month: 8,
+    workDays: 20,
+    present: 20,
+    late: 0,
+    absent: 0,
+    hours: 160,
+    overtime: 18,
+    avgCheckIn: "08:30",
+  },
+  {
+    id: "2",
+    year: 2026,
+    month: 7,
+    workDays: 23,
+    present: 21,
+    late: 1,
+    absent: 1,
+    hours: 184,
+    overtime: 14,
+    avgCheckIn: "08:41",
+  },
+  {
+    id: "3",
+    year: 2026,
+    month: 6,
+    workDays: 22,
+    present: 22,
+    late: 0,
+    absent: 0,
+    hours: 176,
+    overtime: 20,
+    avgCheckIn: "08:35",
+  },
+  {
+    id: "4",
+    year: 2026,
+    month: 5,
+    workDays: 19,
+    present: 15,
+    late: 2,
+    absent: 2,
+    hours: 152,
+    overtime: 4,
+    avgCheckIn: "08:55",
+  },
+  {
+    id: "5",
+    year: 2026,
+    month: 4,
+    workDays: 21,
+    present: 19,
+    late: 1,
+    absent: 1,
+    hours: 168,
+    overtime: 10,
+    avgCheckIn: "08:42",
+  },
+  {
+    id: "6",
+    year: 2026,
+    month: 3,
+    workDays: 22,
+    present: 21,
+    late: 0,
+    absent: 1,
+    hours: 176,
+    overtime: 15,
+    avgCheckIn: "08:40",
+  },
+  {
+    id: "7",
+    year: 2026,
+    month: 2,
+    workDays: 20,
+    present: 18,
+    late: 2,
+    absent: 0,
+    hours: 160,
+    overtime: 8,
+    avgCheckIn: "08:50",
+  },
+  {
+    id: "8",
+    year: 2026,
+    month: 1,
+    workDays: 21,
+    present: 20,
+    late: 1,
+    absent: 0,
+    hours: 168,
+    overtime: 12,
+    avgCheckIn: "08:45",
+  },
+  {
+    id: "9",
+    year: 2025,
+    month: 12,
+    workDays: 20,
+    present: 16,
+    late: 1,
+    absent: 3,
+    hours: 160,
+    overtime: 5,
+    avgCheckIn: "08:48",
+  },
+  {
+    id: "10",
+    year: 2025,
+    month: 11,
+    workDays: 21,
+    present: 18,
+    late: 1,
+    absent: 2,
+    hours: 168,
+    overtime: 6,
+    avgCheckIn: "08:43",
+  },
+  {
+    id: "11",
+    year: 2025,
+    month: 10,
+    workDays: 22,
+    present: 20,
+    late: 2,
+    absent: 0,
+    hours: 176,
+    overtime: 12,
+    avgCheckIn: "08:38",
+  },
+  {
+    id: "12",
+    year: 2025,
+    month: 9,
+    workDays: 21,
+    present: 19,
+    late: 1,
+    absent: 1,
+    hours: 168,
+    overtime: 10,
+    avgCheckIn: "08:44",
+  },
+];
+
+const monthNames = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+// Sync Top 4 KPI Cards dynamically from current active data
+function updateTopCards() {
+  const currentMonthData = mockData[0]; // Bulan paling baru (Aug 2026)
+  const rate = (
+    (currentMonthData.present / currentMonthData.workDays) *
+    100
+  ).toFixed(1);
+
+  document.getElementById("cardAttendanceRate").textContent = `${rate}%`;
+  document.getElementById("cardPunctualityRate").textContent = `88.2%`;
+  document.getElementById("cardTotalWorkHours").textContent =
+    `${currentMonthData.hours}h`;
+  document.getElementById("cardOvertimeHours").textContent =
+    `${currentMonthData.overtime}.0h`;
+}
+
+// ==========================================
+// 3. MENU TAB SWITCHER
+// ==========================================
+function switchTab(tabKey) {
+  // Reset all buttons
+  const buttons = document.querySelectorAll(".tab-btn");
+  buttons.forEach((btn) => {
+    btn.classList.remove(
+      "bg-white",
+      "text-indigo-600",
+      "border-indigo-200",
+      "font-bold",
+      "shadow-sm",
+    );
+    btn.classList.add("text-slate-600");
+  });
+
+  // Activate selected button
+  const selectedBtn = document.getElementById(`tab-${tabKey}`);
+  if (selectedBtn) {
+    selectedBtn.classList.add(
+      "bg-white",
+      "text-indigo-600",
+      "border-indigo-200",
+      "font-bold",
+      "shadow-sm",
+    );
+    selectedBtn.classList.remove("text-slate-600");
+  }
+
+  // Hide all panels
+  const panels = document.querySelectorAll(".tab-panel");
+  panels.forEach((p) => p.classList.add("hidden"));
+
+  // Show selected panel
+  const activePanel = document.getElementById(`panel-${tabKey}`);
+  if (activePanel) {
+    activePanel.classList.remove("hidden");
+  }
+
+  // Redraw canvas chart if overview tab becomes visible
+  if (tabKey === "overview") {
+    setTimeout(renderActivityChart, 50);
+  }
+}
+
+// ==========================================
+// 4. PUNCTUALITY HEATMAP (CALENDAR SMALL SQUARES GRID)
+// ==========================================
+function renderCalendarHeatmap() {
+  const container = document.getElementById("heatmapGrid");
+  if (!container) return;
+
+  const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+  const weeksCount = 12;
+
+  // Preset status warna kotak untuk 12 minggu x 5 hari kerja
+  // 0: On time (Emerald-500), 1: <= 5 min (Emerald-200), 2: <= 20 min (Amber-400), 3: > 20 min (Rose-500)
+  const heatPattern = [
+    [3, 0, 0, 2, 1, 0, 0, 0, 0, 0, 0, 0], // Mon
+    [0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0], // Tue
+    [0, 2, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0], // Wed
+    [0, 1, 1, 1, 0, 0, 0, 3, 2, 0, 0, 1], // Thu
+    [3, 1, 0, 1, 0, 2, 0, 0, 1, 0, 1, 2], // Fri
+  ];
+
+  const colorClasses = [
+    "bg-emerald-500 hover:scale-110", // 0: On time
+    "bg-emerald-200 hover:scale-110", // 1: <= 5 min
+    "bg-amber-400 hover:scale-110", // 2: <= 20 min
+    "bg-rose-500 hover:scale-110", // 3: > 20 min
+  ];
+
+  let html = `<div class="flex flex-col gap-2">`;
+
+  // Row header (Minggu 1..12)
+  html += `<div class="flex items-center gap-2 pl-10 text-[11px] font-semibold text-slate-400 mb-1">`;
+  for (let w = 1; w <= weeksCount; w++) {
+    html += `<span class="w-7 sm:w-8 text-center">${w}</span>`;
+  }
+  html += `</div>`;
+
+  // Day rows
+  days.forEach((day, dayIdx) => {
+    html += `<div class="flex items-center gap-2">`;
+    html += `<span class="w-8 text-xs font-semibold text-slate-500">${day}</span>`;
+
+    for (let w = 0; w < weeksCount; w++) {
+      const statusType = heatPattern[dayIdx][w];
+      const colorClass = colorClasses[statusType];
+      html += `
+        <div 
+          title="Week ${w + 1}, ${day}"
+          class="h-7 w-7 sm:h-8 sm:w-8 rounded-lg ${colorClass} transition-all duration-200 cursor-pointer shadow-xs border border-white/50"
+        ></div>
+      `;
+    }
+    html += `</div>`;
+  });
+
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+// ==========================================
+// 5. MONTHLY WORK HOURS CHART (CANVAS)
+// ==========================================
 const activityChart = document.getElementById("activityTrendChart");
 const activityLabels = [
   "Sep",
@@ -76,12 +365,12 @@ const activityLabels = [
 const activitySeries = [
   {
     label: "regular Hours",
-    values: [18, 19, 20, 18, 20, 21, 18, 20, 19, 18, 17, 21],
+    values: [120, 125, 160, 155, 120, 121, 160, 129, 150, 139, 149, 121],
     color: "#6366f1",
   },
   {
     label: "overtime",
-    values: [8, 7, 9, 8, 7, 8, 7, 8, 9, 8, 7, 8],
+    values: [44, 40, 9, 8, 40, 40, 7, 33, 11, 25, 12, 35],
     color: "#f59e0b",
   },
 ];
@@ -89,16 +378,12 @@ const activitySeries = [
 function renderActivityChart() {
   if (!activityChart) return;
 
-  activityChart.style.width = "100%";
-  activityChart.style.height = "100%";
-  activityChart.style.display = "block";
-
   const ctx = activityChart.getContext("2d");
   if (!ctx) return;
 
   const rect = activityChart.getBoundingClientRect();
-  const width = rect.width || activityChart.clientWidth || 600;
-  const height = rect.height || activityChart.clientHeight || 320;
+  const width = rect.width || 600;
+  const height = rect.height || 320;
   const dpr = window.devicePixelRatio || 1;
 
   activityChart.width = width * dpr;
@@ -149,310 +434,124 @@ function renderActivityChart() {
     });
   });
 
-  ctx.beginPath();
-  ctx.moveTo(padding.left, padding.top + chartHeight);
-  ctx.lineTo(width - padding.right, padding.top + chartHeight);
-  ctx.stroke();
-
-  ctx.beginPath();
-  ctx.moveTo(padding.left, padding.top);
-  ctx.lineTo(padding.left, padding.top + chartHeight);
-  ctx.stroke();
-
   ctx.fillStyle = "#64748b";
   activityLabels.forEach((label, index) => {
     const x = padding.left + index * groupWidth + groupWidth / 2;
-    ctx.fillText(label, x - 14, height - 10);
+    ctx.fillText(label, x - 12, height - 10);
   });
 }
 
-window.addEventListener("resize", renderActivityChart);
-renderActivityChart();
+// ==========================================
+// 6. MONTHLY ATTENDANCE COMPARISON TABLE
+// ==========================================
+function renderAttendanceTable() {
+  const tbody = document.getElementById("attendanceTableBody");
+  if (!tbody) return;
 
-const mockData = [
-  {
-    id: "1",
-    year: 2026,
-    month: 8,
-    workDays: 20,
-    present: 20,
-    late: 0,
-    absent: 0,
-    hours: 160,
-    overtime: 18,
-  },
-  {
-    id: "2",
-    year: 2026,
-    month: 7,
-    workDays: 23,
-    present: 21,
-    late: 1,
-    absent: 1,
-    hours: 184,
-    overtime: 14,
-  },
-  {
-    id: "3",
-    year: 2026,
-    month: 6,
-    workDays: 22,
-    present: 22,
-    late: 0,
-    absent: 0,
-    hours: 176,
-    overtime: 20,
-  },
-  {
-    id: "4",
-    year: 2026,
-    month: 5,
-    workDays: 19,
-    present: 15,
-    late: 2,
-    absent: 2,
-    hours: 152,
-    overtime: 4,
-  },
-  {
-    id: "5",
-    year: 2026,
-    month: 4,
-    workDays: 21,
-    present: 19,
-    late: 1,
-    absent: 1,
-    hours: 168,
-    overtime: 10,
-  },
-  {
-    id: "6",
-    year: 2026,
-    month: 3,
-    workDays: 22,
-    present: 21,
-    late: 0,
-    absent: 1,
-    hours: 176,
-    overtime: 15,
-  },
-  {
-    id: "7",
-    year: 2026,
-    month: 2,
-    workDays: 20,
-    present: 18,
-    late: 2,
-    absent: 0,
-    hours: 160,
-    overtime: 8,
-  },
-  {
-    id: "8",
-    year: 2026,
-    month: 1,
-    workDays: 21,
-    present: 20,
-    late: 1,
-    absent: 0,
-    hours: 168,
-    overtime: 12,
-  },
-  {
-    id: "9",
-    year: 2025,
-    month: 12,
-    workDays: 20,
-    present: 16,
-    late: 1,
-    absent: 3,
-    hours: 160,
-    overtime: 5,
-  },
-  {
-    id: "10",
-    year: 2025,
-    month: 11,
-    workDays: 21,
-    present: 18,
-    late: 1,
-    absent: 2,
-    hours: 168,
-    overtime: 6,
-  },
-  {
-    id: "11",
-    year: 2025,
-    month: 10,
-    workDays: 22,
-    present: 20,
-    late: 2,
-    absent: 0,
-    hours: 176,
-    overtime: 12,
-  },
-  {
-    id: "12",
-    year: 2025,
-    month: 9,
-    workDays: 21,
-    present: 19,
-    late: 1,
-    absent: 1,
-    hours: 168,
-    overtime: 10,
-  },
-];
+  const now = new Date();
+  const currentMonth = 8;
+  const currentYear = 2026;
 
-const monthNames = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+  const sortedData = [...mockData].sort((a, b) => {
+    const isACurrent = a.month === currentMonth && a.year === currentYear;
+    const isBCurrent = b.month === currentMonth && b.year === currentYear;
 
-// 2. Deteksi Bulan & Tahun Saat Ini
-const now = new Date();
-const currentMonth = now.getMonth() + 1; // 1 - 12
-const currentYear = now.getFullYear();
+    if (isACurrent) return -1;
+    if (isBCurrent) return 1;
+    if (a.year !== b.year) return b.year - a.year;
+    return b.month - a.month;
+  });
 
-// 3. Urutkan Data: Bulan Saat ini di Posisi Pertama (-1)
-const sortedData = [...mockData].sort((a, b) => {
-  const isACurrent = a.month === currentMonth && a.year === currentYear;
-  const isBCurrent = b.month === currentMonth && b.year === currentYear;
+  tbody.innerHTML = sortedData
+    .map((row) => {
+      const rateNum = row.workDays > 0 ? (row.present / row.workDays) * 100 : 0;
+      const rateFormatted = rateNum.toFixed(1);
+      const isCurrent = row.month === currentMonth && row.year === currentYear;
 
-  if (isACurrent) return -1;
-  if (isBCurrent) return 1;
+      let barColorClass = "bg-emerald-500";
+      if (rateNum < 80) barColorClass = "bg-rose-500";
+      else if (rateNum < 90) barColorClass = "bg-amber-500";
 
-  // Sisanya diurutkan mundur (terbaru ke terlama)
-  if (a.year !== b.year) return b.year - a.year;
-  return b.month - a.month;
-});
-
-// 4. Render Data ke HTML Table Body
-const tbody = document.getElementById("attendanceTableBody");
-
-tbody.innerHTML = sortedData
-  .map((row) => {
-    // Hitung persentase kehadiran
-    const rateNum = row.workDays > 0 ? (row.present / row.workDays) * 100 : 0;
-    const rateFormatted = rateNum.toFixed(1);
-
-    const isCurrent = row.month === currentMonth && row.year === currentYear;
-
-    // Tentukan warna progress bar berdasarkan performa
-    let barColorClass = "bg-emerald-500";
-    if (rateNum < 80) {
-      barColorClass = "bg-rose-500";
-    } else if (rateNum < 90) {
-      barColorClass = "bg-amber-500";
-    }
-
-    return `
+      return `
         <tr class="transition-colors hover:bg-slate-50/80 ${isCurrent ? "bg-blue-50/40 font-semibold" : ""}">
-          <!-- Month -->
           <td class="px-6 py-4 font-semibold text-slate-800">
             <div class="flex items-center gap-2">
               <span>${monthNames[row.month - 1]} ${row.year}</span>
-              ${
-                isCurrent
-                  ? `
-                <span class="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase text-blue-600">
-                  Current
-                </span>
-              `
-                  : ""
-              }
+              ${isCurrent ? `<span class="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold uppercase text-blue-600">Current</span>` : ""}
             </div>
           </td>
-
-          <!-- Metrics -->
           <td class="px-6 py-4 text-center font-medium">${row.workDays}</td>
           <td class="px-6 py-4 text-center font-medium text-emerald-600">${row.present}</td>
           <td class="px-6 py-4 text-center font-medium text-amber-500">${row.late}</td>
           <td class="px-6 py-4 text-center font-medium text-rose-500">${row.absent}</td>
           <td class="px-6 py-4 text-center font-medium">${row.hours}h</td>
           <td class="px-6 py-4 text-center font-medium text-slate-500">${row.overtime}h</td>
-
-          <!-- Progress Bar & Rate -->
           <td class="px-6 py-4">
             <div class="flex items-center gap-3">
               <span class="w-12 text-right font-semibold text-slate-700">${rateFormatted}%</span>
               <div class="h-2 w-full rounded-full bg-slate-100">
-                <div
-                  class="h-2 rounded-full transition-all duration-500 ${barColorClass}"
-                  style="width: ${Math.min(rateNum, 100)}%"
-                ></div>
+                <div class="h-2 rounded-full transition-all duration-500 ${barColorClass}" style="width: ${Math.min(rateNum, 100)}%"></div>
               </div>
             </div>
           </td>
         </tr>
       `;
-  })
-  .join("");
+    })
+    .join("");
+}
 
-// Data Saved Reports
+// ==========================================
+// 7. SAVED REPORTS & TOAST NOTIFICATION
+// ==========================================
 const savedReports = [
   {
     id: "rpt-1",
     title: "Monthly Attendance Summary",
     description:
-      "Ringkasan total kehadiran, keterlambatan, dan ketidakhadiran dalam satu bulan.",
+      "Summary of total attendance, lateness, and absences in a single month.",
   },
   {
     id: "rpt-2",
     title: "Overtime Report",
     description:
-      "Rincian akumulasi jam lembur harian beserta persetujuan supervisor.",
+      "Details of daily accumulated overtime hours along with supervisor approval.",
   },
   {
     id: "rpt-3",
     title: "Punctuality Scorecard",
-    description:
-      "Skor ketepatan waktu jam masuk kerja dan rekam jejak kedisiplinan.",
+    description: "Check-in punctuality score and discipline track record.",
   },
   {
     id: "rpt-4",
     title: "Leave Balance Statement",
     description:
-      "Pernyataan sisa jatah cuti tahunan, cuti sakit, dan riwayat pengajuan.",
+      "Statement of remaining annual leave balance, sick leave, and request history.",
   },
   {
     id: "rpt-5",
     title: "Full Attendance Audit",
     description:
-      "Laporan audit menyeluruh mencakup log presensi, lokasi, dan verifikasi biometrik.",
+      "Comprehensive audit report including attendance logs, location, and biometric verification.",
   },
 ];
 
-// Function Render List
-const reportsContainer = document.getElementById("reportsList");
+function renderSavedReports() {
+  const reportsContainer = document.getElementById("reportsList");
+  if (!reportsContainer) return;
 
-reportsContainer.innerHTML = savedReports
-  .map(
-    (report) => `
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50/100 p-4 transition-all duration-200 hover:border-slate-200 hover:bg-slate-50">
-        <!-- KIRI: Judul & Keterangan -->
+  reportsContainer.innerHTML = savedReports
+    .map(
+      (report) => `
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50/50 p-4 transition-all duration-200 hover:border-slate-300 hover:bg-slate-50">
         <div class="pr-2">
           <h4 class="font-semibold text-slate-800 text-base">${report.title}</h4>
-          <p class="text-sm text-slate-500 mt-0.5 leading-relaxed">${report.description}</p>
+          <p class="text-xs text-slate-500 mt-0.5 leading-relaxed">${report.description}</p>
         </div>
-
-        <!-- KANAN: Tombol Generate dengan Ikon -->
         <div class="shrink-0">
           <button 
             onclick="showToast('${report.id}', '${report.title}')"
-            class="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-all hover:bg-blue-700 active:scale-95 shadow-sm shadow-blue-200"
+            class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-indigo-700 active:scale-95 shadow-sm shadow-indigo-200"
           >
-            <!-- Lucide Icon: FileText/Download -->
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
@@ -461,133 +560,47 @@ reportsContainer.innerHTML = savedReports
         </div>
       </div>
     `,
-  )
-  .join("");
+    )
+    .join("");
+}
 
 const toast = document.getElementById("toast");
 const closeToastBtn = document.getElementById("closeToastBtn");
 let toastTimer;
 
-function showToast(id, title, message = "Meng-generate laporan:") {
-  // 1. Ambil nilai title (gunakan fallback jika dipanggil tanpa parameter)
+function showToast(id, title, message = "Generating report:") {
   const reportTitle = title || "Default Report";
   document.getElementById("file-name").textContent = reportTitle;
 
   const toastMessageEl = document.getElementById("toast-message");
-  if (toastMessageEl) {
-    toastMessageEl.textContent = message;
-  }
+  if (toastMessageEl) toastMessageEl.textContent = message;
 
-  // 2. Batalkan timer penutupan sebelumnya jika ada
   clearTimeout(toastTimer);
-
-  // 3. Hapus 'hidden' terlebih dahulu agar elemen masuk ke DOM
   toast.classList.remove("hidden");
 
-  // 4. Gunakan requestAnimationFrame / setTimeout tipis
-  // agar browser sempat me-render elemen sebelum memicu animasi transisi
   setTimeout(() => {
     toast.classList.remove("-translate-y-10", "opacity-0");
     toast.classList.add("translate-y-0", "opacity-100");
   }, 20);
 
-  // 5. Atur penutupan otomatis setelah 3 detik
   toastTimer = setTimeout(hideToast, 3000);
 }
 
 function hideToast() {
-  // 1. Stop timer otomatis agar tidak memicu hideToast dua kali
   clearTimeout(toastTimer);
-
-  // 2. Jalankan animasi keluar (slide up & fade out)
   toast.classList.remove("translate-y-0", "opacity-100");
   toast.classList.add("-translate-y-10", "opacity-0");
 
-  // 3. Tunggu hingga animasi CSS selesai (300ms sesuai duration-300), baru pasang class 'hidden'
   setTimeout(() => {
     toast.classList.add("hidden");
   }, 300);
 }
 
-// Event Listener tombol close (X)
-if (closeToastBtn) {
-  closeToastBtn.addEventListener("click", hideToast);
-}
+closeToastBtn?.addEventListener("click", hideToast);
 
-// Action Handler
-function generateReport(id, title) {
-  alert(`Mulai meng-generate laporan: ${title}`);
-}
-
-// 1. Data Mentah Dinamis (Simulasi Data dari API/State)
-const attendanceLogs = [
-  {
-    month: "Jan 2026",
-    workDays: 21,
-    present: 20,
-    hours: 168,
-    overtime: 12,
-    avgCheckIn: "08:45",
-  },
-  {
-    month: "Feb 2026",
-    workDays: 20,
-    present: 18,
-    hours: 160,
-    overtime: 8,
-    avgCheckIn: "08:50",
-  },
-  {
-    month: "Mar 2026",
-    workDays: 22,
-    present: 21,
-    hours: 176,
-    overtime: 15,
-    avgCheckIn: "08:40",
-  },
-  {
-    month: "Apr 2026",
-    workDays: 21,
-    present: 19,
-    hours: 168,
-    overtime: 10,
-    avgCheckIn: "08:42",
-  },
-  {
-    month: "Mei 2026",
-    workDays: 19,
-    present: 15,
-    hours: 152,
-    overtime: 4,
-    avgCheckIn: "08:55",
-  },
-  {
-    month: "Jun 2026",
-    workDays: 22,
-    present: 22,
-    hours: 176,
-    overtime: 20,
-    avgCheckIn: "08:35",
-  },
-  {
-    month: "Jul 2026",
-    workDays: 23,
-    present: 21,
-    hours: 184,
-    overtime: 14,
-    avgCheckIn: "08:41",
-  },
-  {
-    month: "Agu 2026",
-    workDays: 20,
-    present: 20,
-    hours: 160,
-    overtime: 18,
-    avgCheckIn: "08:30",
-  },
-];
-
-// 2. Fungsi Kalkulasi Data Dinamis
+// ==========================================
+// 8. DYNAMIC INSIGHTS GENERATOR
+// ==========================================
 function calculateInsights(data) {
   let totalWorkDays = 0;
   let totalPresent = 0;
@@ -600,7 +613,6 @@ function calculateInsights(data) {
     totalPresent += item.present;
     totalOvertime += item.overtime;
 
-    // Hitung rate bulan ini untuk mencari bulan terbaik
     const currentRate = (item.present / item.workDays) * 100;
     if (currentRate >= bestRate) {
       bestRate = currentRate;
@@ -608,121 +620,123 @@ function calculateInsights(data) {
     }
   });
 
-  // Overall Rate
   const overallRate =
     totalWorkDays > 0
       ? ((totalPresent / totalWorkDays) * 100).toFixed(1)
       : "0.0";
-
-  // Mengambil data check-in bulan terakhir sebagai acuan rata-rata
-  const latestCheckIn = data[data.length - 1].avgCheckIn;
+  const latestCheckIn = data[0].avgCheckIn;
 
   return {
     attendanceRate: `${overallRate}%`,
     avgCheckIn: `${latestCheckIn} AM`,
-    bestMonthName: bestMonth.month.split(" ")[0],
+    bestMonthName: monthNames[bestMonth.month - 1],
     bestMonthRate: `${bestRate.toFixed(0)}%`,
-    bestMonthHours: `${bestMonth.hours} Jam`,
-    totalOvertime: `${totalOvertime} Jam`,
+    bestMonthHours: `${bestMonth.hours} Hours`,
+    totalOvertime: `${totalOvertime} Hours`,
   };
 }
 
-// 3. Render Komponen HTML
 function renderInsights() {
-  const stats = calculateInsights(attendanceLogs);
+  const stats = calculateInsights(mockData);
   const container = document.getElementById("insightsGrid");
+  if (!container) return;
 
   container.innerHTML = `
-        <!-- 1. Attendance Rate -->
-        <div class="flex flex-col justify-between rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="rounded-xl bg-blue-100 p-2.5 text-blue-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
-                </svg>
-              </span>
-              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-600">
-                <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7 7 7M12 3v18"/></svg>
-                +2.4%
-              </span>
-            </div>
-            <p class="mt-4 text-sm font-medium text-slate-500">Attendance Rate</p>
-            <h3 class="text-2xl font-bold text-slate-800">${stats.attendanceRate}</h3>
-          </div>
-          <div class="mt-3 border-t border-slate-100 pt-2">
-            <p class="text-xs text-slate-400">Rata-rata presensi kumulatif</p>
-          </div>
+    <!-- 1. Attendance Rate -->
+    <div class="flex flex-col justify-between rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+      <div>
+        <div class="flex items-center justify-between">
+          <span class="rounded-xl bg-blue-100 p-2.5 text-blue-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2z" />
+            </svg>
+          </span>
+          <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-600">
+            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7 7 7M12 3v18"/></svg>
+            +2.4%
+          </span>
         </div>
+        <p class="mt-4 text-xs font-medium text-slate-500">Attendance Rate</p>
+        <h3 class="text-2xl font-bold text-slate-800">${stats.attendanceRate}</h3>
+      </div>
+      <div class="mt-3 border-t border-slate-100 pt-2">
+        <p class="text-[11px] text-slate-400">Cumulative average attendance</p>
+      </div>
+    </div>
 
-        <!-- 2. Avg. Check-in -->
-        <div class="flex flex-col justify-between rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="rounded-xl bg-emerald-100 p-2.5 text-emerald-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </span>
-              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-600">
-                On Time
-              </span>
-            </div>
-            <p class="mt-4 text-sm font-medium text-slate-500">Avg. Check-in Time</p>
-            <h3 class="text-2xl font-bold text-slate-800">${stats.avgCheckIn}</h3>
-          </div>
-          <div class="mt-3 border-t border-slate-100 pt-2">
-            <p class="text-xs text-slate-400">Berdasarkan log bulan terakhir</p>
-          </div>
+    <!-- 2. Avg. Check-in -->
+    <div class="flex flex-col justify-between rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+      <div>
+        <div class="flex items-center justify-between">
+          <span class="rounded-xl bg-emerald-100 p-2.5 text-emerald-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </span>
+          <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-600">On Time</span>
         </div>
+        <p class="mt-4 text-xs font-medium text-slate-500">Avg. Check-in Time</p>
+        <h3 class="text-2xl font-bold text-slate-800">${stats.avgCheckIn}</h3>
+      </div>
+      <div class="mt-3 border-t border-slate-100 pt-2">
+        <p class="text-[11px] text-slate-400">Based on last month's log</p>
+      </div>
+    </div>
 
-        <!-- 3. Bulan Terbaik -->
-        <div class="flex flex-col justify-between rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="rounded-xl bg-amber-100 p-2.5 text-amber-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                </svg>
-              </span>
-              <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-600">
-                Top Performance
-              </span>
-            </div>
-            <p class="mt-4 text-sm font-medium text-slate-500">Best Performing Month</p>
-            <div class="flex items-baseline gap-2">
-              <h3 class="text-2xl font-bold text-slate-800">${stats.bestMonthName}</h3>
-              <span class="text-xs font-semibold text-emerald-600">(${stats.bestMonthRate} Rate)</span>
-            </div>
-          </div>
-          <div class="mt-3 border-t border-slate-100 pt-2 flex justify-between items-center text-xs">
-            <span class="text-slate-400">Total Jam Kerja:</span>
-            <span class="font-bold text-slate-700">${stats.bestMonthHours}</span>
-          </div>
+    <!-- 3. Best Month -->
+    <div class="flex flex-col justify-between rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+      <div>
+        <div class="flex items-center justify-between">
+          <span class="rounded-xl bg-amber-100 p-2.5 text-amber-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
+          </span>
+          <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-600">Top Performance</span>
         </div>
+        <p class="mt-4 text-xs font-medium text-slate-500">Best Performing Month</p>
+        <div class="flex items-baseline gap-2">
+          <h3 class="text-2xl font-bold text-slate-800">${stats.bestMonthName}</h3>
+          <span class="text-xs font-semibold text-emerald-600">(${stats.bestMonthRate} Rate)</span>
+        </div>
+      </div>
+      <div class="mt-3 border-t border-slate-100 pt-2 flex justify-between items-center text-[11px]">
+        <span class="text-slate-400">Total Work Hours:</span>
+        <span class="font-bold text-slate-700">${stats.bestMonthHours}</span>
+      </div>
+    </div>
 
-        <!-- 4. Overtime Hours -->
-        <div class="flex flex-col justify-between rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
-          <div>
-            <div class="flex items-center justify-between">
-              <span class="rounded-xl bg-indigo-100 p-2.5 text-indigo-600">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </span>
-              <span class="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-600">
-                Akumulasi
-              </span>
-            </div>
-            <p class="mt-4 text-sm font-medium text-slate-500">Total Overtime Hours</p>
-            <h3 class="text-2xl font-bold text-slate-800">${stats.totalOvertime}</h3>
-          </div>
-          <div class="mt-3 border-t border-slate-100 pt-2">
-            <p class="text-xs text-slate-400">Total jam lembur tercatat</p>
-          </div>
+    <!-- 4. Overtime Hours -->
+    <div class="flex flex-col justify-between rounded-3xl border border-slate-100 bg-white p-5 shadow-sm">
+      <div>
+        <div class="flex items-center justify-between">
+          <span class="rounded-xl bg-indigo-100 p-2.5 text-indigo-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </span>
+          <span class="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-600">Accumulated</span>
         </div>
-      `;
+        <p class="mt-4 text-xs font-medium text-slate-500">Total Overtime Hours</p>
+        <h3 class="text-2xl font-bold text-slate-800">${stats.totalOvertime}</h3>
+      </div>
+      <div class="mt-3 border-t border-slate-100 pt-2">
+        <p class="text-[11px] text-slate-400">Total recorded overtime hours</p>
+      </div>
+    </div>
+  `;
 }
 
-// Jalankan render saat halaman siap
-renderInsights();
+// ==========================================
+// 9. INITIALIZATION
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+  updateTopCards();
+  renderCalendarHeatmap();
+  renderActivityChart();
+  renderAttendanceTable();
+  renderSavedReports();
+  renderInsights();
+});
+
+window.addEventListener("resize", renderActivityChart);
